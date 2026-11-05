@@ -1,0 +1,85 @@
+.componente-sidebar {
+    position: fixed;
+    top: var(--mc-navbar-h);
+    bottom: 0;
+    left: 0;
+    width: var(--mc-sidebar-w);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 14px;
+    overflow-y: auto;
+    z-index: 1020;
+    background: linear-gradient(180deg, var(--mc-primary-dark), #0f2a44);
+    transition: transform .25s ease, width .25s ease, padding .25s ease;
+}
+
+.sidebar-section {
+    padding: 0 12px 10px;
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .45);
+}
+
+.sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    color: rgba(255, 255, 255, .75);
+    font-size: .92rem;
+    font-weight: 500;
+    text-decoration: none !important;
+    transition: all .15s ease;
+}
+
+.sidebar-link i { width: 18px; text-align: center; }
+.sidebar-excel-icon { color: #a7e8c5; }
+
+.sidebar-link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, .08);
+}
+
+.sidebar-link.active {
+    color: #fff;
+    background: rgba(255, 255, 255, .14);
+    box-shadow: inset 3px 0 0 var(--mc-accent);
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding: 12px;
+    font-size: .75rem;
+    color: rgba(255, 255, 255, .4);
+}
+
+@media (max-width: 991.98px) {
+    .componente-sidebar { transform: translateX(-100%); }
+    body.sidebar-abierto .componente-sidebar { transform: translateX(0); }
+}
+
+@media (min-width: 992px) {
+    body.sidebar-colapsado { --mc-sidebar-w: 72px; }
+
+    body.sidebar-colapsado .componente-sidebar {
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    body.sidebar-colapsado .sidebar-section,
+    body.sidebar-colapsado .sidebar-link span,
+    body.sidebar-colapsado .sidebar-footer-text {
+        display: none;
+    }
+
+    body.sidebar-colapsado .sidebar-link {
+        justify-content: center;
+        padding-right: 8px;
+        padding-left: 8px;
+    }
+}

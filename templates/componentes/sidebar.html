@@ -1,0 +1,22 @@
+<aside class="componente-sidebar" id="sidebar">
+    <div class="sidebar-section">Menú</div>
+    <nav class="sidebar-nav">
+        <a class="sidebar-link {% if request.resolver_match.url_name == 'listar_danzarines' %}active{% endif %}" href="{% url 'listar_danzarines' %}" title="Danzarines">
+            <i class="fas fa-users"></i><span>Danzarines</span>
+        </a>
+        <a class="sidebar-link {% if request.resolver_match.url_name == 'listar_bloques' %}active{% endif %}" href="{% url 'listar_bloques' %}" title="Bloques">
+            <i class="fas fa-th-large"></i><span>Bloques</span>
+        </a>
+        <a class="sidebar-link {% if 'reporte' in request.resolver_match.url_name or request.resolver_match.url_name == 'panel_reportes' %}active{% endif %}" href="{% url 'panel_reportes' %}" title="Reportes">
+            <i class="fas fa-file-excel sidebar-excel-icon"></i><span>Reportes</span>
+        </a>
+        {% comment %} {% if user.is_superuser %}
+        <a class="sidebar-link" href="/admin/" target="_blank" rel="noopener">
+            <i class="fas fa-user-shield"></i><span>Administración</span>
+        </a>
+        {% endif %} {% endcomment %}
+    </nav>
+    <div class="sidebar-footer">
+        <i class="fas fa-shield-alt"></i> Sistema de gestión
+    </div>
+</aside>

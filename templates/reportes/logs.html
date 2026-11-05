@@ -1,0 +1,37 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block titulo %}Reporte de logs{% endblock %}
+{% block estilos_extra %}<link rel="stylesheet" href="{% static 'css/reportes/logs.css' %}">{% endblock %}
+{% block contenido %}
+<section class="reportes-page">
+    <div class="page-heading"><div><a class="back-link" href="{% url 'panel_reportes' %}"><i class="fas fa-arrow-left"></i> Volver a reportes</a><h1>Reporte de logs</h1><p>Consulta la actividad de las búsquedas de habilitación.</p></div><a class="btn btn-logs" href="{% url 'descargar_logs' %}{% if querystring %}?{{ querystring }}{% endif %}"><i class="fas fa-file-excel"></i> Descargar logs</a></div>
+    <section class="logs-section">
+        <form class="filtros-form" method="get">
+            <div><label for="resultado">Resultado</label><select class="form-control" id="resultado" name="resultado"><option value="">Todos los resultados</option>{% for valor, etiqueta in resultados %}<option value="{{ valor }}" {% if filtros.resultado == valor %}selected{% endif %}>{{ etiqueta }}</option>{% endfor %}</select></div>
+            <div><label for="desde">Desde</label><input class="form-control" id="desde" name="desde" type="date" value="{{ filtros.desde }}"></div>
+            <div><label for="hasta">Hasta</label><input class="form-control" id="hasta" name="hasta" type="date" value="{{ filtros.hasta }}"></div>
+            <div class="filtros-actions"><button class="btn btn-primary" type="submit"><i class="fas fa-filter"></i> Filtrar</button><a class="btn btn-light" href="{% url 'reporte_logs' %}">Limpiar</a></div>
+        </form>
+        <div class="section-heading"><div><span class="reportes-card-label">Auditoría</span><h2>Consultas de habilitación</h2></div><span class="logs-count">{{ total }} resultado{{ total|pluralize }}</span></div>
+        <div class="table-responsive"><table class="table reportes-table"><thead><tr><th>Fecha</th><th>Búsqueda</th><th>Resultado</th><th>Danzarín</th><th>IP</th></tr></thead><tbody>{% for log in logs %}<tr><td>{{ log.fecha|date:"d/m/Y H:i" }}</td><td class="font-weight-600">{{ log.busqueda }}</td><td><span class="resultado-badge resultado-{{ log.resultado|lower }}">{{ log.get_resultado_display }}</span></td><td>{% if log.danzarin %}{{ log.danzarin.nombre_completo }}{% else %}<span class="text-muted">Sin coincidencia</span>{% endif %}</td><td class="text-muted">{{ log.ip }}</td></tr>{% empty %}<tr><td class="table-empty" colspan="5"><i class="fas fa-inbox"></i><span>No hay logs con los filtros seleccionados.</span></td></tr>{% endfor %}</tbody></table></div>
+        <div class="reportes-paginacion">
+            <span class="paginacion-resumen">Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }} de {{ paginator.count }}</span>
+            {% if paginator.num_pages > 1 %}
+            <nav aria-label="Paginación del reporte">
+                <ul class="pagination pagination-sm mb-0">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if querystring %}&{{ querystring }}{% endif %}" aria-label="Página anterior"><i class="fas fa-chevron-left"></i></a></li>
+                    {% endif %}
+                    <li class="page-item active"><span class="page-link">{{ page_obj.number }} / {{ paginator.num_pages }}</span></li>
+                    {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if querystring %}&{{ querystring }}{% endif %}" aria-label="Página siguiente"><i class="fas fa-chevron-right"></i></a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+        {% if total > 25 %}<p class="table-note"><i class="fas fa-info-circle"></i> Se muestran 25 registros por página. La descarga incluye todos los resultados filtrados.</p>{% endif %}
+    </section>
+</section>
+{% endblock %}
+{% block scripts_extra %}<script src="{% static 'js/reportes/logs.js' %}"></script>{% endblock %}

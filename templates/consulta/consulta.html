@@ -1,0 +1,62 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block titulo %}Consultar habilitación{% endblock %}
+{% block body_class %}login-page{% endblock %}
+
+{% block estilos_extra %}
+<link rel="stylesheet" href="{% static 'css/registration/login.css' %}">
+<link rel="stylesheet" href="{% static 'css/consulta/consulta.css' %}">
+{% endblock %}
+
+{% block contenido %}
+<div class="login-wrap">
+    <div class="login-card">
+        <img class="login-logo" src="{% static 'media/logo.png' %}" alt="Morenada Central">
+        <h2>¿Estoy habilitado?</h2>
+        <p class="login-sub">Consulta tu estado de habilitación</p>
+
+        <div class="alert alert-danger login-alert d-none" id="consultaError" role="alert">
+            <i class="fas fa-exclamation-circle"></i> <span></span>
+        </div>
+
+        <form id="formConsulta" action="{% url 'consultar_habilitacion' %}" data-estado-url="{% url 'estado_habilitacion' 0 %}" novalidate autocomplete="off">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="consultaBusqueda">Código o nombre</label>
+                <div class="input-icon">
+                    <i class="fas fa-search"></i>
+                    <input class="form-control" id="consultaBusqueda" name="busqueda" maxlength="100" placeholder="Código, primer nombre o primer apellido" autofocus>
+                </div>
+                <small class="form-text text-muted">Si no recuerdas tu código, escribe tu primer nombre y/o tu primer apellido.</small>
+            </div>
+            <button class="btn btn-primary btn-block btn-login" type="submit" id="btnConsultar"><span class="btn-texto">Consultar <i class="fas fa-search ml-1"></i></span></button>
+        </form>
+
+        <div class="lista-coincidencias d-none" id="listaCoincidencias" aria-live="polite">
+            <p class="lista-titulo">Se encontraron varias coincidencias. Selecciona tu nombre:</p>
+            <ul id="coincidencias" role="listbox"></ul>
+        </div>
+
+        <div class="resultado-consulta d-none" id="resultadoConsulta" aria-live="polite">
+            <div class="resultado-icono"><i class="fas"></i></div>
+            <div class="resultado-nombre"></div>
+            <div class="resultado-detalle small text-muted d-none"></div>
+            <span class="badge-estado"></span>
+            <p class="resultado-texto"></p>
+        </div>
+
+        <p class="enlace-acceso">
+            {% if user.is_authenticated %}
+                <a href="{% url 'listar_danzarines' %}"><i class="fas fa-arrow-left"></i> Ir al sistema</a>
+            {% else %}
+                <a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Acceso al sistema</a>
+            {% endif %}
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
+<script src="{% static 'js/consulta/consulta.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block titulo %}Reportes{% endblock %}
+{% block estilos_extra %}<link rel="stylesheet" href="{% static 'css/reportes/reportes.css' %}">{% endblock %}
+{% block contenido %}
+<section class="reportes-page">
+    <div class="reportes-hero"><div><span class="reportes-eyebrow"><i class="fas fa-chart-line"></i> Centro de información</span><h1>Reportes</h1><p>Selecciona el reporte que deseas consultar o descargar.</p></div><div class="reportes-hero-icon"><i class="fas fa-chart-pie"></i></div></div>
+    <div class="reportes-stats">
+        <div class="reporte-stat"><span class="stat-icon stat-icon-blue"><i class="fas fa-users"></i></span><div><strong>{{ total_danzarines }}</strong><small>Danzarines registrados</small></div></div>
+        <div class="reporte-stat"><span class="stat-icon stat-icon-green"><i class="fas fa-user-check"></i></span><div><strong>{{ total_habilitados }}</strong><small>Danzarines habilitados</small></div></div>
+        <div class="reporte-stat"><span class="stat-icon stat-icon-purple"><i class="fas fa-layer-group"></i></span><div><strong>{{ total_bloques }}</strong><small>Bloques</small></div></div>
+        <div class="reporte-stat"><span class="stat-icon stat-icon-orange"><i class="fas fa-history"></i></span><div><strong>{{ total_logs }}</strong><small>Consultas registradas</small></div></div>
+    </div>
+    <div class="reportes-grid dashboard-options">
+        <a class="reporte-card reporte-card-excel reporte-card-link" href="{% url 'reporte_danzarines' %}"><div class="reporte-card-icon"><i class="fas fa-file-excel"></i></div><div class="reporte-card-body"><span class="reporte-card-label">Reporte de nómina</span><h2>Danzarines</h2><p>Consulta, filtra y descarga la nómina de danzarines en formato Excel.</p><span class="btn btn-excel"><i class="fas fa-arrow-right"></i> Abrir reporte</span></div></a>
+        <a class="reporte-card reporte-card-logs reporte-card-link" href="{% url 'reporte_logs' %}"><div class="reporte-card-icon"><i class="fas fa-clipboard-list"></i></div><div class="reporte-card-body"><span class="reporte-card-label">Reporte de auditoría</span><h2>Logs de consultas</h2><p>Revisa las consultas de habilitación, aplica filtros y descarga los registros.</p><span class="btn btn-logs"><i class="fas fa-arrow-right"></i> Abrir reporte</span></div></a>
+    </div>
+</section>
+{% endblock %}
+{% block scripts_extra %}<script src="{% static 'js/reportes/reportes.js' %}"></script>{% endblock %}

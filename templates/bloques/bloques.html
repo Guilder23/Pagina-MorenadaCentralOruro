@@ -1,0 +1,131 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Bloques{% endblock %}
+
+{% block estilos_extra %}
+<link rel="stylesheet" href="{% static 'css/bloques/bloques.css' %}">
+<link rel="stylesheet" href="{% static 'css/bloques/modals/crea.css' %}">
+<link rel="stylesheet" href="{% static 'css/bloques/modals/edita.css' %}">
+<link rel="stylesheet" href="{% static 'css/bloques/modals/ver.css' %}">
+<link rel="stylesheet" href="{% static 'css/bloques/modals/elimina.css' %}">
+<link rel="stylesheet" href="{% static 'css/bloques/modals/eliminar.css' %}">
+{% endblock %}
+
+{% block contenido %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Bloques</h1>
+        <p class="page-subtitle">Agrupa a los danzarines por bloque</p>
+    </div>
+    <button type="button" class="btn btn-primary btn-nuevo" data-toggle="modal" data-target="#modalCrearBloque">
+        <i class="fas fa-plus"></i> Nuevo bloque
+    </button>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-icon stat-total"><i class="fas fa-th-large"></i></span>
+        <div><div class="stat-value">{{ total_general }}</div><div class="stat-label">Total de bloques</div></div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon stat-ok"><i class="fas fa-check-circle"></i></span>
+        <div><div class="stat-value">{{ total_habilitados }}</div><div class="stat-label">Habilitados</div></div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon stat-off"><i class="fas fa-ban"></i></span>
+        <div><div class="stat-value">{{ total_inhabilitados }}</div><div class="stat-label">Inhabilitados</div></div>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="panel-toolbar">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" class="form-control" id="buscarBloque" placeholder="Buscar por nombre o descripción..." value="{{ q }}">
+        </div>
+        <select class="form-control filtro-estado" id="estadoBloque">
+            <option value="" {% if not estado %}selected{% endif %}>Todos los estados</option>
+            <option value="habilitado" {% if estado == 'habilitado' %}selected{% endif %}>Habilitados</option>
+            <option value="inhabilitado" {% if estado == 'inhabilitado' %}selected{% endif %}>Inhabilitados</option>
+        </select>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table tabla-bloques">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th class="text-center">Danzarines</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-right">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in bloques %}
+                <tr>
+                    <td><span class="bloque-chip">{{ b.nombre }}</span></td>
+                    <td>{{ b.descripcion|default:"—" }}</td>
+                    <td class="text-center"><span class="codigo-chip">{{ b.total_danzarines }}</span></td>
+                    <td class="text-center">
+                        <span class="badge-estado {% if b.habilitado %}habilitado{% else %}inhabilitado{% endif %}">{{ b.estado_texto }}</span>
+                    </td>
+                    <td class="text-right acciones">
+                        <button type="button" class="btn-accion btn-ver-bloque" data-bloque-id="{{ b.id }}" title="Ver"><i class="fas fa-eye"></i></button>
+                        <button type="button" class="btn-accion btn-editar-bloque" data-bloque-id="{{ b.id }}" title="Editar"><i class="fas fa-pen"></i></button>
+                        {% if user.is_superuser or user.perfil.rol == 'administrador' %}
+                        <button type="button" class="btn-accion btn-bloquear-bloque" data-bloque-id="{{ b.id }}" data-nombre="{{ b.nombre }}" data-habilitado="{% if b.habilitado %}1{% else %}0{% endif %}" title="{% if b.habilitado %}Inhabilitar{% else %}Habilitar{% endif %}"><i class="fas {% if b.habilitado %}fa-lock{% else %}fa-lock-open{% endif %}"></i></button>
+                        <button type="button" class="btn-accion peligro btn-eliminar-bloque" data-bloque-id="{{ b.id }}" data-nombre="{{ b.nombre }}" title="Eliminar"><i class="fas fa-trash"></i></button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">
+                        <div class="empty-state">
+                            <i class="fas fa-th-large"></i>
+                            <p>No se encontraron bloques.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="panel-footer">
+        <span class="resumen">Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }} de {{ paginator.count }}</span>
+        {% if paginator.num_pages > 1 %}
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ q|urlencode }}&estado={{ estado }}"><i class="fas fa-chevron-left"></i></a></li>
+                {% endif %}
+                <li class="page-item active"><span class="page-link">{{ page_obj.number }} / {{ paginator.num_pages }}</span></li>
+                {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ q|urlencode }}&estado={{ estado }}"><i class="fas fa-chevron-right"></i></a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+
+{% include 'bloques/modals/crea.html' %}
+{% include 'bloques/modals/edita.html' %}
+{% include 'bloques/modals/ver.html' %}
+{% if user.is_superuser or user.perfil.rol == 'administrador' %}
+{% include 'bloques/modals/elimina.html' %}
+{% include 'bloques/modals/eliminar.html' %}
+{% endif %}
+{% endblock %}
+
+{% block scripts_extra %}
+<script src="{% static 'js/bloques/modals/crea.js' %}"></script>
+<script src="{% static 'js/bloques/modals/edita.js' %}"></script>
+<script src="{% static 'js/bloques/modals/ver.js' %}"></script>
+<script src="{% static 'js/bloques/modals/elimina.js' %}"></script>
+<script src="{% static 'js/bloques/modals/eliminar.js' %}"></script>
+<script src="{% static 'js/bloques/bloques.js' %}"></script>
+{% endblock %}

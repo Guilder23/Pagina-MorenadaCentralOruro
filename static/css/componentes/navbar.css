@@ -1,0 +1,95 @@
+.componente-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--mc-navbar-h);
+    z-index: 1030;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(255, 255, 255, .92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--mc-border);
+}
+
+.navbar-left, .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.navbar-toggle {
+    display: block;
+    border: 0;
+    background: transparent;
+    font-size: 1.2rem;
+    color: var(--mc-primary);
+    cursor: pointer;
+}
+
+.navbar-brand-mc {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none !important;
+    color: var(--mc-primary) !important;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: -.01em;
+}
+
+.navbar-logo {
+    display: block;
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+}
+
+.navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #e8f0f8;
+    color: var(--mc-primary);
+    font-weight: 700;
+}
+
+.user-info { display: flex; flex-direction: column; line-height: 1.15; }
+.user-name { font-size: .88rem; font-weight: 600; color: var(--mc-text); }
+.user-role { font-size: .72rem; color: var(--mc-muted); text-transform: capitalize; }
+
+.btn-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--mc-border);
+    background: #fff;
+    color: var(--mc-muted);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: .85rem;
+    font-weight: 500;
+    transition: all .15s ease;
+}
+
+.btn-logout:hover {
+    color: var(--mc-danger);
+    border-color: #f3b5b5;
+    background: #fff5f5;
+}
+
+@media (max-width: 991.98px) {
+    .navbar-toggle { display: block; }
+    .navbar-toggle { display: block; }
+    .user-info { display: none; }
+}

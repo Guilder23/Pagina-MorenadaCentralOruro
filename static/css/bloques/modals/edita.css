@@ -1,0 +1,12 @@
+.estado-switch {
+    padding: 14px 16px;
+    border: 1px solid var(--mc-border);
+    border-radius: 10px;
+    background: #fafcfe;
+}
+
+.estado-switch .custom-control-label { font-weight: 500; cursor: pointer; }
+.estado-switch .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: var(--mc-success);
+    border-color: var(--mc-success);
+}

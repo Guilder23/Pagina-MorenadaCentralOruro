@@ -1,0 +1,57 @@
+<div class="modal fade modal-mc" id="modalCrearDanzarin" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <form class="modal-content" id="formCrearDanzarin" method="post" action="{% url 'crear_danzarin' %}" autocomplete="off">
+            {% csrf_token %}
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-user-plus"></i> Nuevo danzarin</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="crearCodigo">Código *</label>
+                        <input type="text" class="form-control" id="crearCodigo" name="codigo" maxlength="20" placeholder="Ej: 200181" required>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="crearCi">CI</label>
+                        <input type="text" class="form-control campo-mayus" id="crearCi" name="ci" maxlength="20" placeholder="Opcional">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="crearBloque">Bloque *</label>
+                        <select class="form-control" id="crearBloque" name="bloque" required>
+                            <option value="">Selecciona un bloque</option>
+                            {% for b in bloques_habilitados %}
+                            <option value="{{ b.id }}">{{ b.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="crearApellidoPaterno">Apellido paterno *</label>
+                        <input type="text" class="form-control campo-mayus" id="crearApellidoPaterno" name="apellido_paterno" maxlength="100" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="crearApellidoMaterno">Apellido materno</label>
+                        <input type="text" class="form-control campo-mayus" id="crearApellidoMaterno" name="apellido_materno" maxlength="100">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="crearPrimerNombre">Primer nombre *</label>
+                        <input type="text" class="form-control campo-mayus" id="crearPrimerNombre" name="primer_nombre" maxlength="100" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="crearSegundoNombre">Segundo nombre</label>
+                        <input type="text" class="form-control campo-mayus" id="crearSegundoNombre" name="segundo_nombre" maxlength="100">
+                    </div>
+                </div>
+                <small class="text-muted"><i class="fas fa-info-circle"></i> El danzarin se registra como <strong>HABILITADO</strong>. Los campos con * son obligatorios.</small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+<div class="modal fade modal-mc" id="modalImportarDanzarines" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form class="modal-content" id="formImportarDanzarines" method="post" action="{% url 'importar_danzarines' %}" enctype="multipart/form-data" autocomplete="off">
+            {% csrf_token %}
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-file-excel"></i> Registro masivo por Excel</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="importar-ayuda">
+                    <p>El archivo <strong>.xlsx</strong> debe tener estas columnas:</p>
+                    <p class="importar-columnas">CODIGO · CI · APELLIDO PATERNO · APELLIDO MATERNO · PRIMER NOMBRE · SEGUNDO NOMBRE · ESTADO HABILITADO</p>
+                    <ul>
+                        <li>Obligatorios: <strong>CODIGO</strong>, <strong>APELLIDO PATERNO</strong> y <strong>PRIMER NOMBRE</strong>. El <strong>CI es opcional</strong>.</li>
+                        <li>Opcional: una columna <strong>BLOQUE</strong> para asignar bloques distintos por fila.</li>
+                        <li>Los códigos o CI ya registrados se omiten.</li>
+                    </ul>
+                    <a href="{% url 'plantilla_importacion' %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-download"></i> Descargar plantilla</a>
+                </div>
+                <div class="form-group">
+                    <label for="importarBloque">Bloque *</label>
+                    <select class="form-control" id="importarBloque" name="bloque" required>
+                        <option value="">Selecciona un bloque</option>
+                        {% for b in bloques_habilitados %}
+                        <option value="{{ b.id }}">{{ b.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                    <small class="text-muted">Se usa para las filas sin columna BLOQUE.</small>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="importarArchivo">Archivo Excel *</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="importarArchivo" name="archivo" accept=".xlsx" required>
+                        <label class="custom-file-label" for="importarArchivo" data-browse="Elegir">Selecciona un archivo...</label>
+                    </div>
+                    <div class="invalid-feedback d-block" id="importarError"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="btnImportar"><i class="fas fa-upload"></i> Importar</button>
+            </div>
+        </form>
+    </div>
+</div>

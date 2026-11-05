@@ -1,0 +1,45 @@
+<!doctype html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block titulo %}Morenada Central{% endblock %} · Morenada Central</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/base/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/componentes/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/componentes/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/componentes/footer.css' %}">
+    {% block estilos_extra %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    {% if user.is_authenticated %}
+        {% include "componentes/navbar.html" %}
+        {% include "componentes/sidebar.html" %}
+    {% endif %}
+    <main class="componente-contenido {% if user.is_authenticated %}con-sidebar{% endif %}">
+        <div class="toast-zone">
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible fade show app-alert" role="alert">
+                    <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"></i>
+                    <span>{{ message }}</span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                </div>
+            {% endfor %}
+        </div>
+        {% block contenido %}{% endblock %}
+    </main>
+    {% include "componentes/footer.html" %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/base/base.js' %}"></script>
+    <script src="{% static 'js/componentes/navbar.js' %}"></script>
+    <script src="{% static 'js/componentes/sidebar.js' %}"></script>
+    <script src="{% static 'js/componentes/footer.js' %}"></script>
+    {% block scripts_extra %}{% endblock %}
+</body>
+</html>

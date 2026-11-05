@@ -1,0 +1,26 @@
+<div class="modal fade modal-mc" id="modalCrearBloque" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form class="modal-content" id="formCrearBloque" method="post" action="{% url 'crear_bloque' %}" autocomplete="off">
+            {% csrf_token %}
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-plus-square"></i> Nuevo bloque</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="crearNombreBloque">Nombre *</label>
+                    <input type="text" class="form-control campo-mayus" id="crearNombreBloque" name="nombre" maxlength="100" placeholder="Ej: BLOQUE A" required>
+                </div>
+                <div class="form-group">
+                    <label for="crearDescripcionBloque">Descripción</label>
+                    <input type="text" class="form-control" id="crearDescripcionBloque" name="descripcion" maxlength="255" placeholder="Opcional">
+                </div>
+                <small class="text-muted"><i class="fas fa-info-circle"></i> El bloque se registra como <strong>HABILITADO</strong>.</small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>

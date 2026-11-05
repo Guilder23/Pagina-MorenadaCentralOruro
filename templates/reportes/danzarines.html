@@ -1,0 +1,36 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block titulo %}Reporte de danzarines{% endblock %}
+{% block estilos_extra %}<link rel="stylesheet" href="{% static 'css/reportes/danzarines.css' %}">{% endblock %}
+{% block contenido %}
+<section class="reportes-page">
+    <div class="page-heading"><div><a class="back-link" href="{% url 'panel_reportes' %}"><i class="fas fa-arrow-left"></i> Volver a reportes</a><h1>Reporte de danzarines</h1><p>Filtra la nómina y descarga únicamente los resultados que necesitas.</p></div><a class="btn btn-excel" href="{% url 'descargar_danzarines' %}{% if querystring %}?{{ querystring }}{% endif %}"><i class="fas fa-file-excel"></i> Descargar Excel</a></div>
+    <section class="logs-section">
+        <form class="filtros-form filtros-danzarines" method="get">
+            <div><label for="q">Buscar</label><input class="form-control" id="q" name="q" value="{{ filtros.q }}" placeholder="Código, CI o nombre"></div>
+            <div><label for="estado">Estado</label><select class="form-control" id="estado" name="estado"><option value="">Todos</option><option value="habilitado" {% if filtros.estado == "habilitado" %}selected{% endif %}>Habilitados</option><option value="inhabilitado" {% if filtros.estado == "inhabilitado" %}selected{% endif %}>Inhabilitados</option></select></div>
+            <div><label for="bloque">Bloque</label><select class="form-control" id="bloque" name="bloque"><option value="">Todos los bloques</option>{% for bloque in bloques %}<option value="{{ bloque.id }}" {% if filtros.bloque == bloque.id|stringformat:"s" %}selected{% endif %}>{{ bloque.nombre }}</option>{% endfor %}</select></div>
+            <div class="filtros-actions"><button class="btn btn-primary" type="submit"><i class="fas fa-filter"></i> Filtrar</button><a class="btn btn-light" href="{% url 'reporte_danzarines' %}">Limpiar</a></div>
+        </form>
+        <div class="section-heading"><div><span class="reportes-card-label">Resultados</span><h2>Nómina de danzarines</h2></div><span class="logs-count">{{ total }} resultado{{ total|pluralize }}</span></div>
+        <div class="table-responsive"><table class="table reportes-table"><thead><tr><th>Código</th><th>CI</th><th>Apellido paterno</th><th>Apellido materno</th><th>Primer nombre</th><th>Segundo nombre</th><th>Bloque</th><th>Estado</th><th>Actualización</th></tr></thead><tbody>{% for danzarin in danzarines %}<tr><td class="font-weight-600">{{ danzarin.codigo }}</td><td>{{ danzarin.ci|default:"-" }}</td><td>{{ danzarin.apellido_paterno }}</td><td>{{ danzarin.apellido_materno|default:"-" }}</td><td>{{ danzarin.primer_nombre }}</td><td>{{ danzarin.segundo_nombre|default:"-" }}</td><td>{{ danzarin.bloque.nombre|default:"-" }}</td><td><span class="resultado-badge {% if danzarin.habilitado %}resultado-habilitado{% else %}resultado-inhabilitado{% endif %}">{{ danzarin.estado_texto }}</span></td><td>{{ danzarin.fecha_actualizacion|date:"d/m/Y H:i" }}</td></tr>{% empty %}<tr><td class="table-empty" colspan="9"><i class="fas fa-inbox"></i><span>No hay danzarines con los filtros seleccionados.</span></td></tr>{% endfor %}</tbody></table></div>
+        <div class="reportes-paginacion">
+            <span class="paginacion-resumen">Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }} de {{ paginator.count }}</span>
+            {% if paginator.num_pages > 1 %}
+            <nav aria-label="Paginación del reporte">
+                <ul class="pagination pagination-sm mb-0">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if querystring %}&{{ querystring }}{% endif %}" aria-label="Página anterior"><i class="fas fa-chevron-left"></i></a></li>
+                    {% endif %}
+                    <li class="page-item active"><span class="page-link">{{ page_obj.number }} / {{ paginator.num_pages }}</span></li>
+                    {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if querystring %}&{{ querystring }}{% endif %}" aria-label="Página siguiente"><i class="fas fa-chevron-right"></i></a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </section>
+</section>
+{% endblock %}
+{% block scripts_extra %}<script src="{% static 'js/reportes/danzarines.js' %}"></script>{% endblock %}

@@ -1,0 +1,186 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Danzarines{% endblock %}
+
+{% block estilos_extra %}
+<link rel="stylesheet" href="{% static 'css/danzarines/danzarines.css' %}">
+<link rel="stylesheet" href="{% static 'css/danzarines/modals/crea.css' %}">
+<link rel="stylesheet" href="{% static 'css/danzarines/modals/importa.css' %}">
+<link rel="stylesheet" href="{% static 'css/danzarines/modals/edita.css' %}">
+<link rel="stylesheet" href="{% static 'css/danzarines/modals/ver.css' %}">
+<link rel="stylesheet" href="{% static 'css/danzarines/modals/elimina.css' %}">
+<link rel="stylesheet" href="{% static 'css/danzarines/modals/eliminar.css' %}">
+{% endblock %}
+
+{% block contenido %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Danzarines</h1>
+        <p class="page-subtitle">Registro y gestión de danzarines</p>
+    </div>
+    <div class="page-acciones">
+        <button type="button" class="btn btn-outline-primary btn-importar" data-toggle="modal" data-target="#modalImportarDanzarines">
+            <i class="fas fa-file-excel"></i> Importar Excel
+        </button>
+        <button type="button" class="btn btn-primary btn-nuevo" data-toggle="modal" data-target="#modalCrearDanzarin">
+            <i class="fas fa-plus"></i> Nuevo danzarin
+        </button>
+    </div>
+</div>
+
+{% if duplicados %}
+<div class="panel duplicados-panel" id="panelDuplicados">
+    <div class="duplicados-header">
+        <div>
+            <h2><i class="fas fa-exclamation-triangle"></i> Danzarines repetidos: {{ duplicados_total }}</h2>
+            <p>Estos danzarines ya existen, por lo tanto <strong>no se van a registrar</strong>.</p>
+        </div>
+        <button type="button" class="close" id="cerrarDuplicados" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+    </div>
+    <div class="table-responsive">
+        <table class="table duplicados-tabla">
+            <thead>
+                <tr><th>Fila</th><th>Danzarin del Excel</th><th>Coincide por</th><th>Ya existe como</th><th>Situación</th></tr>
+            </thead>
+            <tbody>
+                {% for d in duplicados %}
+                <tr>
+                    <td>{{ d.fila }}</td>
+                    <td><strong>{{ d.codigo }}</strong> · {{ d.nombre }}</td>
+                    <td>{{ d.motivo }}</td>
+                    <td>{{ d.existente }}</td>
+                    <td><span class="badge-estado inhabilitado">El danzarin ya existe</span> <small>{{ d.origen }}</small></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if duplicados_total > duplicados|length %}
+    <p class="duplicados-mas">Se muestran los primeros {{ duplicados|length }} de {{ duplicados_total }}.</p>
+    {% endif %}
+</div>
+{% endif %}
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-icon stat-total"><i class="fas fa-users"></i></span>
+        <div><div class="stat-value">{{ total_general }}</div><div class="stat-label">Total de danzarines</div></div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon stat-ok"><i class="fas fa-user-check"></i></span>
+        <div><div class="stat-value">{{ total_habilitados }}</div><div class="stat-label">Habilitados</div></div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon stat-off"><i class="fas fa-user-slash"></i></span>
+        <div><div class="stat-value">{{ total_inhabilitados }}</div><div class="stat-label">Inhabilitados</div></div>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="panel-toolbar">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" class="form-control" id="buscarDanzarin" placeholder="Buscar por código, apellidos o nombres..." value="{{ q }}">
+        </div>
+        <select class="form-control filtro-estado" id="bloqueDanzarin">
+            <option value="">Todos los bloques</option>
+            {% for b in bloques %}
+            <option value="{{ b.id }}" {% if bloque_filtro == b.id|stringformat:'s' %}selected{% endif %}>{{ b.nombre }}</option>
+            {% endfor %}
+        </select>
+        <select class="form-control filtro-estado" id="estadoDanzarin">
+            <option value="" {% if not estado %}selected{% endif %}>Todos los estados</option>
+            <option value="habilitado" {% if estado == 'habilitado' %}selected{% endif %}>Habilitados</option>
+            <option value="inhabilitado" {% if estado == 'inhabilitado' %}selected{% endif %}>Inhabilitados</option>
+        </select>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table tabla-danzarines">
+            <thead>
+                <tr>
+                    <th class="text-center">Código</th>
+                    <th>CI</th>
+                    <th>Bloque</th>
+                    <th>Apellido paterno</th>
+                    <th>Apellido materno</th>
+                    <th>Primer nombre</th>
+                    <th>Segundo nombre</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-right">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in danzarines %}
+                <tr>
+                    <td class="text-center"><span class="codigo-chip">{{ c.codigo }}</span></td>
+                    <td>{{ c.ci|default:"—" }}</td>
+                    <td>{% if c.bloque %}<span class="bloque-chip">{{ c.bloque.nombre }}</span>{% else %}—{% endif %}</td>
+                    <td class="fw-600">{{ c.apellido_paterno }}</td>
+                    <td>{{ c.apellido_materno|default:"—" }}</td>
+                    <td>{{ c.primer_nombre }}</td>
+                    <td>{{ c.segundo_nombre|default:"—" }}</td>
+                    <td class="text-center">
+                        <span class="badge-estado {% if c.habilitado %}habilitado{% else %}inhabilitado{% endif %}">{{ c.estado_texto }}</span>
+                    </td>
+                    <td class="text-right acciones">
+                        <button type="button" class="btn-accion btn-ver-danzarin" data-danzarin-id="{{ c.id }}" title="Ver"><i class="fas fa-eye"></i></button>
+                        <button type="button" class="btn-accion btn-editar-danzarin" data-danzarin-id="{{ c.id }}" title="Editar"><i class="fas fa-pen"></i></button>
+                        {% if user.is_superuser or user.perfil.rol == 'administrador' %}
+                        <button type="button" class="btn-accion btn-bloquear-danzarin" data-danzarin-id="{{ c.id }}" data-nombre="{{ c.nombre_completo }}" data-habilitado="{% if c.habilitado %}1{% else %}0{% endif %}" title="{% if c.habilitado %}Inhabilitar{% else %}Habilitar{% endif %}"><i class="fas {% if c.habilitado %}fa-lock{% else %}fa-lock-open{% endif %}"></i></button>
+                        <button type="button" class="btn-accion peligro btn-eliminar-danzarin" data-danzarin-id="{{ c.id }}" data-nombre="{{ c.nombre_completo }}" title="Eliminar"><i class="fas fa-trash"></i></button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9">
+                        <div class="empty-state">
+                            <i class="fas fa-user-friends"></i>
+                            <p>No se encontraron danzarines.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="panel-footer">
+        <span class="resumen">Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }} de {{ paginator.count }}</span>
+        {% if paginator.num_pages > 1 %}
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ q|urlencode }}&estado={{ estado }}&bloque={{ bloque_filtro }}"><i class="fas fa-chevron-left"></i></a></li>
+                {% endif %}
+                <li class="page-item active"><span class="page-link">{{ page_obj.number }} / {{ paginator.num_pages }}</span></li>
+                {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ q|urlencode }}&estado={{ estado }}&bloque={{ bloque_filtro }}"><i class="fas fa-chevron-right"></i></a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+
+{% include 'danzarines/modals/crea.html' %}
+{% include 'danzarines/modals/importa.html' %}
+{% include 'danzarines/modals/edita.html' %}
+{% include 'danzarines/modals/ver.html' %}
+{% if user.is_superuser or user.perfil.rol == 'administrador' %}
+{% include 'danzarines/modals/elimina.html' %}
+{% include 'danzarines/modals/eliminar.html' %}
+{% endif %}
+{% endblock %}
+
+{% block scripts_extra %}
+<script src="{% static 'js/danzarines/modals/crea.js' %}"></script>
+<script src="{% static 'js/danzarines/modals/importa.js' %}"></script>
+<script src="{% static 'js/danzarines/modals/edita.js' %}"></script>
+<script src="{% static 'js/danzarines/modals/ver.js' %}"></script>
+<script src="{% static 'js/danzarines/modals/elimina.js' %}"></script>
+<script src="{% static 'js/danzarines/modals/eliminar.js' %}"></script>
+<script src="{% static 'js/danzarines/danzarines.js' %}"></script>
+{% endblock %}

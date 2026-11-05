@@ -1,0 +1,26 @@
+{% load static %}
+<nav class="componente-navbar">
+    <div class="navbar-left">
+        <button type="button" class="navbar-toggle" id="btnToggleSidebar" aria-label="Alternar menú lateral" aria-expanded="true" title="Colapsar menú lateral">
+            <i class="fas fa-bars"></i>
+        </button>
+        <a class="navbar-brand-mc" href="{% url 'listar_danzarines' %}" aria-label="Morenada Central" title="Morenada Central">
+            <img class="navbar-logo" src="{% static 'media/logo.png' %}" alt="Logo Morenada Central">
+        </a>
+    </div>
+    <div class="navbar-right">
+        <div class="navbar-user">
+            <span class="user-avatar">{{ user.username|slice:":1"|upper }}</span>
+            <span class="user-info">
+                <span class="user-name">{{ user.get_full_name|default:user.username }}</span>
+                <span class="user-role">{% if user.is_superuser %}Administrador{% else %}{{ user.perfil.get_rol_display|default:"Usuario" }}{% endif %}</span>
+            </span>
+        </div>
+        <form class="d-inline" method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="btn-logout" type="submit" title="Cerrar sesión">
+                <i class="fas fa-sign-out-alt"></i><span class="d-none d-md-inline">Salir</span>
+            </button>
+        </form>
+    </div>
+</nav>

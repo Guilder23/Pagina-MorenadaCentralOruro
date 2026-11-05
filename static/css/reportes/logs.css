@@ -1,0 +1,5 @@
+@import url("reportes.css");
+
+.logs-section .reportes-table td:first-child {
+    white-space: nowrap;
+}
