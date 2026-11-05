@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "apps.danzarines.apps.DanzarinesConfig",
     "apps.bloques.apps.BloquesConfig",
     "apps.inicio.apps.InicioConfig",
+    "apps.historia.apps.HistoriaConfig",
     "apps.reportes.apps.ReportesConfig",
 ]
 

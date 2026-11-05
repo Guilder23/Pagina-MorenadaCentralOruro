@@ -1,0 +1,24 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block titulo %}Historia{% endblock %}
+{% block estilos_extra %}<link rel="stylesheet" href="{% static 'css/historia/historia.css' %}">{% endblock %}
+{% block contenido %}
+<div class="page-header">
+    <div><h1 class="page-title">Gestión de historia</h1><p class="page-subtitle">Administra la historia de la fraternidad.</p></div>
+    <div class="page-acciones"><a class="btn btn-primary btn-nuevo" href="{% url 'crear_historia' %}"><i class="fas fa-plus"></i> Nueva historia</a></div>
+</div>
+<div class="stats-grid">
+    <div class="stat-card"><span class="stat-icon stat-total"><i class="fas fa-book-open"></i></span><div><div class="stat-value">{{ total_general }}</div><div class="stat-label">Historias publicadas</div></div></div>
+    <div class="stat-card"><span class="stat-icon stat-ok"><i class="fas fa-image"></i></span><div><div class="stat-value">{{ total_con_foto }}</div><div class="stat-label">Con fotografía</div></div></div>
+    <div class="stat-card"><span class="stat-icon stat-off"><i class="fas fa-file-alt"></i></span><div><div class="stat-value">{{ total_sin_foto }}</div><div class="stat-label">Sin fotografía</div></div></div>
+</div>
+<div class="panel">
+    <div class="panel-toolbar"><div class="search-box"><i class="fas fa-search"></i><input type="text" class="form-control" id="buscarHistoria" placeholder="Buscar por título o descripción..." value="{{ q }}"></div></div>
+    <div class="table-responsive"><table class="table tabla-inicio"><thead><tr><th>Foto</th><th>Título</th><th>Descripción</th><th>Actualizado</th><th class="text-right">Acciones</th></tr></thead><tbody>
+    {% for h in historias %}<tr><td>{% if h.foto %}<img class="inicio-miniatura" src="{{ h.foto.url }}" alt="{{ h.titulo }}">{% else %}<span class="inicio-sin-foto"><i class="fas fa-image"></i></span>{% endif %}</td><td class="fw-600">{{ h.titulo }}</td><td class="descripcion-corta">{{ h.descripcion|striptags|truncatechars:100 }}</td><td>{{ h.fecha_actualizacion|date:"d/m/Y H:i" }}</td><td class="text-right acciones"><a class="btn-accion" href="{% url 'detalle_historia' h.id %}" title="Ver"><i class="fas fa-eye"></i></a><a class="btn-accion" href="{% url 'editar_historia' h.id %}" title="Editar"><i class="fas fa-pen"></i></a>{% if user.is_superuser or user.perfil.rol == 'administrador' %}<a class="btn-accion peligro" href="{% url 'eliminar_historia' h.id %}" title="Eliminar"><i class="fas fa-trash"></i></a>{% endif %}</td></tr>
+    {% empty %}<tr><td colspan="5"><div class="empty-state"><i class="fas fa-book-open"></i><p>No se encontraron historias.</p></div></td></tr>{% endfor %}
+    </tbody></table></div>
+    <div class="panel-footer"><span class="resumen">Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }} de {{ paginator.count }}</span>{% if paginator.num_pages > 1 %}<nav><ul class="pagination pagination-sm mb-0">{% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ q|urlencode }}"><i class="fas fa-chevron-left"></i></a></li>{% endif %}<li class="page-item active"><span class="page-link">{{ page_obj.number }} / {{ paginator.num_pages }}</span></li>{% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ q|urlencode }}"><i class="fas fa-chevron-right"></i></a></li>{% endif %}</ul></nav>{% endif %}</div>
+</div>
+{% endblock %}
+{% block scripts_extra %}<script src="{% static 'js/historia/historia.js' %}"></script>{% endblock %}
