@@ -1,0 +1,56 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Nuevo contenido{% endblock %}
+{% block estilos_extra %}
+<link rel="stylesheet" href="{% static 'css/inicio/crud/crear.css' %}">
+{% endblock %}
+
+{% block contenido %}
+<div class="crud-header">
+    <div>
+        <a class="crud-volver" href="{% url 'listar_presentaciones' %}"><i class="fas fa-arrow-left"></i> Volver a Inicio</a>
+        <div class="crud-kicker"><i class="fas fa-layer-group"></i> Gestión de contenido</div>
+        <h1 class="page-title">Nuevo contenido</h1>
+        <p class="page-subtitle">Crea una presentación clara y atractiva para la fraternidad.</p>
+    </div>
+    <div class="crud-header-icon"><i class="fas fa-file-alt"></i></div>
+</div>
+<form class="crud-layout" method="post" enctype="multipart/form-data" id="formCrearPresentacion">
+    {% csrf_token %}
+    <section class="crud-panel crud-main-card">
+        <div class="crud-panel-header"><span class="section-icon"><i class="fas fa-edit"></i></span><div><h2>Información principal</h2><p>Completa los datos que verá la comunidad.</p></div></div>
+        <div class="crud-panel-body">
+            <div class="form-group">
+                <label for="crearTitulo">Título <span>*</span></label>
+                <input class="form-control" id="crearTitulo" name="titulo" maxlength="150" value="{{ datos.titulo|default:'' }}" placeholder="Ej. Presentación de la fraternidad" required>
+                <small class="field-help">Usa un título corto y fácil de identificar.</small>
+            </div>
+            <div class="form-group">
+                <label>Descripción <span>*</span></label>
+                {% include "inicio/crud/_editor.html" with editor_id="crearDescripcion" editor_value=datos.descripcion|default:'' %}
+                <small class="field-help">Puedes aplicar formato, insertar enlaces y agregar imágenes dentro del texto.</small>
+            </div>
+        </div>
+    </section>
+    <aside class="crud-side">
+        <section class="crud-panel media-card">
+            <div class="crud-panel-header"><span class="section-icon"><i class="fas fa-image"></i></span><div><h2>Imagen principal</h2><p>Opcional</p></div></div>
+            <div class="crud-panel-body">
+                <label for="crearFoto">Fotografía</label>
+                <div class="upload-box" id="crearUploadBox"><i class="fas fa-cloud-upload-alt"></i><strong>Selecciona una imagen</strong><span>JPG, PNG o WEBP · Máximo 5 MB</span><input type="file" id="crearFoto" name="foto" accept="image/*"></div>
+                <img id="crearFotoPreview" class="upload-preview" alt="Vista previa de la fotografía">
+            </div>
+        </section>
+        <div class="crud-note"><i class="fas fa-circle-info"></i><div><strong>Consejo</strong><p>Una fotografía representativa ayuda a comunicar mejor la identidad de la fraternidad.</p></div></div>
+    </aside>
+    <div class="crud-panel-footer">
+        <a class="btn btn-light" href="{% url 'listar_presentaciones' %}">Cancelar</a>
+        <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> Guardar contenido</button>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts_extra %}
+<script src="{% static 'js/inicio/crud/crear.js' %}"></script>
+{% endblock %}

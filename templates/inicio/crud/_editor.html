@@ -1,0 +1,17 @@
+<div class="editor-enriquecido">
+    <div class="editor-barra" role="toolbar" aria-label="Formato de texto">
+        <button type="button" class="editor-boton" data-command="bold" title="Negrita"><i class="fas fa-bold"></i></button>
+        <button type="button" class="editor-boton" data-command="italic" title="Cursiva"><i class="fas fa-italic"></i></button>
+        <button type="button" class="editor-boton" data-command="createLink" title="Insertar enlace"><i class="fas fa-link"></i></button>
+        <button type="button" class="editor-boton" data-command="insertUnorderedList" title="Lista con viñetas"><i class="fas fa-list-ul"></i></button>
+        <button type="button" class="editor-boton" data-command="insertOrderedList" title="Lista numerada"><i class="fas fa-list-ol"></i></button>
+        <button type="button" class="editor-boton editor-imagen" title="Insertar imagen"><i class="fas fa-image"></i></button>
+        <select class="editor-formato" title="Formato de párrafo">
+            <option value="p">Párrafo</option><option value="h2">Título</option><option value="h3">Subtítulo</option><option value="blockquote">Cita</option>
+        </select>
+        <input type="file" class="editor-archivo-imagen" accept="image/*" hidden>
+    </div>
+    <div class="editor-area" id="{{ editor_id }}" contenteditable="true" data-placeholder="Escribe la descripción de la fraternidad...">{{ editor_value|safe }}</div>
+    <textarea name="descripcion" class="editor-valor" hidden></textarea>
+</div>
+

@@ -1,0 +1,15 @@
+.crud-header { margin-bottom: 24px; }
+.crud-volver { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 12px; color: var(--mc-primary-light); font-size: .82rem; font-weight: 700; }
+.crud-volver:hover { color: var(--mc-primary-dark); text-decoration: none; }
+.crud-kicker { margin-bottom: 5px; color: var(--mc-primary); font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.crud-kicker i { margin-right: 5px; }
+.page-title { color: var(--mc-primary); }
+.confirmar-panel { width: 100%; max-width: 580px; margin: 0 auto; padding: 42px 34px; border: 1px solid #f1d4d4; border-radius: 14px; background: var(--mc-surface); box-shadow: var(--mc-shadow); text-align: center; }
+.confirmar-icono { display: grid; place-items: center; width: 68px; height: 68px; margin: 0 auto 15px; border-radius: 18px; background: var(--mc-danger-bg); color: var(--mc-danger); font-size: 1.45rem; }
+.confirmar-badge { display: inline-block; padding: 5px 10px; border-radius: 999px; background: #fff3f3; color: var(--mc-danger); font-size: .68rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+.confirmar-panel h2 { margin: 15px 0 10px; color: var(--mc-text); font-size: 1.35rem; }
+.confirmar-panel p { margin: 0 auto; max-width: 420px; color: var(--mc-muted); line-height: 1.6; }
+.confirmar-registro { display: flex; align-items: center; justify-content: center; gap: 9px; margin: 22px 0 14px; padding: 14px; border: 1px solid var(--mc-border); border-radius: 9px; background: #f8fafc; color: var(--mc-primary); }
+.confirmar-registro i { color: var(--mc-primary-light); }
+.confirmar-acciones { display: flex; justify-content: center; gap: 10px; margin-top: 28px; }
+@media (max-width: 600px) { .confirmar-panel { padding: 30px 20px; } }

@@ -1,0 +1,58 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Editar contenido{% endblock %}
+{% block estilos_extra %}
+<link rel="stylesheet" href="{% static 'css/inicio/crud/editar.css' %}">
+{% endblock %}
+
+{% block contenido %}
+{% with valor=datos|default:presentacion %}
+<div class="crud-header">
+    <div>
+        <a class="crud-volver" href="{% url 'listar_presentaciones' %}"><i class="fas fa-arrow-left"></i> Volver a Inicio</a>
+        <div class="crud-kicker"><i class="fas fa-layer-group"></i> Gestión de contenido</div>
+        <h1 class="page-title">Editar contenido</h1>
+        <p class="page-subtitle">Actualiza la información que se mostrará en la página.</p>
+    </div>
+    <div class="crud-header-icon"><i class="fas fa-edit"></i></div>
+</div>
+<form class="crud-layout" method="post" enctype="multipart/form-data" id="formEditarPresentacion">
+    {% csrf_token %}
+    <section class="crud-panel crud-main-card">
+        <div class="crud-panel-header"><span class="section-icon"><i class="fas fa-edit"></i></span><div><h2>Información principal</h2><p>Modifica los datos del contenido.</p></div></div>
+        <div class="crud-panel-body">
+            <div class="form-group">
+                <label for="editTitulo">Título <span>*</span></label>
+                <input class="form-control" id="editTitulo" name="titulo" maxlength="150" value="{{ valor.titulo }}" required>
+                <small class="field-help">El título identifica el contenido en el listado.</small>
+            </div>
+            <div class="form-group">
+                <label>Descripción <span>*</span></label>
+                {% include "inicio/crud/_editor.html" with editor_id="editDescripcion" editor_value=valor.descripcion %}
+                <small class="field-help">Los cambios de formato se conservarán al guardar.</small>
+            </div>
+        </div>
+    </section>
+    <aside class="crud-side">
+        <section class="crud-panel media-card">
+            <div class="crud-panel-header"><span class="section-icon"><i class="fas fa-image"></i></span><div><h2>Imagen principal</h2><p>{% if presentacion.foto %}Imagen actual{% else %}Opcional{% endif %}</p></div></div>
+            <div class="crud-panel-body">
+                <label for="editFoto">Reemplazar fotografía</label>
+                <div class="upload-box" id="editUploadBox"><i class="fas fa-cloud-upload-alt"></i><strong>Selecciona una imagen</strong><span>JPG, PNG o WEBP · Máximo 5 MB</span><input type="file" id="editFoto" name="foto" accept="image/*"></div>
+                {% if presentacion.foto %}<img id="editFotoPreview" class="upload-preview visible" src="{{ presentacion.foto.url }}" alt="{{ presentacion.titulo }}">{% else %}<img id="editFotoPreview" class="upload-preview" alt="Vista previa de la fotografía">{% endif %}
+            </div>
+        </section>
+        <div class="crud-note"><i class="fas fa-circle-info"></i><div><strong>Importante</strong><p>Si no seleccionas una imagen, se conservará la fotografía actual.</p></div></div>
+    </aside>
+    <div class="crud-panel-footer">
+        <a class="btn btn-light" href="{% url 'listar_presentaciones' %}">Cancelar</a>
+        <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> Actualizar contenido</button>
+    </div>
+</form>
+{% endwith %}
+{% endblock %}
+
+{% block scripts_extra %}
+<script src="{% static 'js/inicio/crud/editar.js' %}"></script>
+{% endblock %}
