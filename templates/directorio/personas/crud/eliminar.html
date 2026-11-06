@@ -1,0 +1,38 @@
+{%extends 'base/base.html'%}{%load static%}{%block titulo%}Eliminar
+cartera{%endblock%}{%block estilos_extra%}<link
+  rel="stylesheet"
+  href="{%static 'css/directorio/personas/crud/eliminar.css'%}"
+/>{%endblock%}{%block scripts_extra%}
+<script src="{%static 'js/directorio/personas/crud/eliminar.js'%}"></script>
+{%endblock%} {%block contenido%}
+<div class="crud-header">
+  <div>
+    <a
+      class="crud-volver"
+      href="{%url 'gestionar_personas_directorio' persona.seccion_id%}"
+      ><i class="fas fa-arrow-left"></i> Volver a la sección</a
+    >
+    <div class="crud-kicker danger">
+      <i class="fas fa-shield-alt"></i> Acción permanente
+    </div>
+    <h1 class="page-title">Eliminar cartera</h1>
+  </div>
+</div>
+<form class="confirmar-panel" method="post">
+  {%csrf_token%}
+  <div class="confirmar-icono"><i class="fas fa-trash"></i></div>
+  <h2>¿Eliminar esta cartera?</h2>
+  <div class="confirmar-registro">
+    <strong>{{ persona.cargo }}: {{ persona.nombre }}</strong>
+  </div>
+  <div class="confirmar-acciones">
+    <a
+      class="btn btn-light"
+      href="{%url 'detalle_seccion_directorio' persona.seccion_id%}"
+      >Cancelar</a
+    ><button class="btn btn-danger" type="submit">
+      <i class="fas fa-trash"></i> Sí, eliminar
+    </button>
+  </div>
+</form>
+{%endblock%}

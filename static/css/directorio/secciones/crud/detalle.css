@@ -1,0 +1,48 @@
+@import url("../../../inicio/crud/detalle.css");
+@import url("../secciones.css");
+@import url("../../crud/detalle.css");
+
+.section-information {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  padding: 24px;
+}
+.section-information-photo img,
+.section-information-photo .inicio-sin-foto {
+  width: 180px;
+  height: 150px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--mc-border);
+  border-radius: 10px;
+  object-fit: cover;
+}
+.section-information-photo .inicio-sin-foto {
+  background: #eef4fa;
+  color: var(--mc-primary);
+  font-size: 2rem;
+}
+.section-information-content {
+  flex: 1;
+}
+.section-information-content h2 {
+  margin: 0 0 12px;
+  color: var(--mc-primary);
+}
+.section-information-content p {
+  margin: 0 0 16px;
+}
+.section-information-description {
+  color: var(--mc-text-muted);
+  line-height: 1.7;
+}
+@media (max-width: 640px) {
+  .section-information {
+    flex-direction: column;
+  }
+  .section-information-photo img,
+  .section-information-photo .inicio-sin-foto {
+    width: 100%;
+  }
+}

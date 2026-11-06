@@ -1,0 +1,102 @@
+{%extends 'base/base.html'%}{%load static%} {%block titulo%}Secciones del
+directorio{%endblock%} {%block estilos_extra%}<link
+  rel="stylesheet"
+  href="{%static 'css/directorio/secciones/secciones.css'%}"
+/>{%endblock%} {%block contenido%}
+<div class="crud-header">
+  <div>
+    <a class="crud-volver" href="{%url 'listar_directorio'%}"
+      ><i class="fas fa-arrow-left"></i> Volver a Directorio</a
+    >
+    <div class="crud-kicker">
+      <i class="fas fa-layer-group"></i> Gestión de secciones
+    </div>
+    <h1 class="page-title">{{ gestion.nombre }}</h1>
+    <p class="page-subtitle">
+      {{ gestion.inicio_gestion|default:"Por completar" }} - {{ gestion.fin_gestion|default:"Por completar" }} · {{ gestion.frente_ganador|default:"Frente por completar" }}
+    </p>
+  </div>
+</div>
+<div class="directorio-datos">
+  <strong>Período:</strong> {{ gestion.inicio_gestion|default:"Por completar" }}
+  - {{ gestion.fin_gestion|default:"Por completar" }}
+  <strong>Frente:</strong> {{ gestion.frente_ganador|default:"Por completar" }}
+</div>
+<div class="panel">
+  <div class="panel-toolbar secciones-toolbar">
+    <h2>Secciones del directorio</h2>
+    <a
+      class="btn btn-primary"
+      href="{%url 'crear_seccion_directorio' gestion.id%}"
+      ><i class="fas fa-plus"></i> Nueva sección</a
+    >
+  </div>
+  <div class="table-responsive">
+    <table class="table tabla-inicio">
+      <thead>
+        <tr>
+          <th>Foto</th>
+          <th>Sección</th>
+          <th>Descripción</th>
+          <th>Carteras</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%for seccion in gestion.secciones.all%}
+        <tr>
+          <td>
+            {%if seccion.foto%}<img
+              class="seccion-miniatura"
+              src="{{ seccion.foto.url }}"
+              alt="{{ seccion.nombre }}"
+            />{%else%}<span class="inicio-sin-foto seccion-sin-foto"
+              ><i class="fas fa-layer-group"></i></span
+            >{%endif%}
+          </td>
+          <td class="fw-600">{{ seccion.nombre }}</td>
+          <td class="descripcion-corta">
+            {{ seccion.descripcion|striptags|truncatechars:100 }}
+          </td>
+          <td>{{ seccion.personas.count }}</td>
+          <td class="text-right acciones">
+            <a
+              class="btn-accion"
+              href="{%url 'detalle_seccion_directorio' seccion.id%}"
+              title="Ver detalle de la sección"
+              ><i class="fas fa-eye"></i></a
+            ><a
+              class="btn-accion"
+              href="{%url 'gestionar_personas_directorio' seccion.id%}"
+              title="Gestionar carteras y personas"
+              ><i class="fas fa-users"></i></a
+            ><a
+              class="btn-accion"
+              href="{%url 'editar_seccion_directorio' seccion.id%}"
+              title="Editar"
+              ><i class="fas fa-pen"></i></a
+            ><a
+              class="btn-accion peligro"
+              href="{%url 'eliminar_seccion_directorio' seccion.id%}"
+              title="Eliminar"
+              ><i class="fas fa-trash"></i
+            ></a>
+          </td>
+        </tr>
+        {%empty%}
+        <tr>
+          <td colspan="5">
+            <div class="empty-state">
+              <i class="fas fa-layer-group"></i>
+              <p>Aún no hay secciones.</p>
+            </div>
+          </td>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+  </div>
+</div>
+{%endblock%} {%block scripts_extra%}
+<script src="{%static 'js/directorio/secciones/secciones.js'%}"></script>
+{%endblock%}

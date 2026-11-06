@@ -1,0 +1,31 @@
+@import url("../directorio.css");
+.secciones-toolbar {
+  align-items: center;
+  justify-content: space-between;
+}
+.secciones-toolbar h2 {
+  margin: 0;
+  color: var(--mc-primary);
+  font-size: 1.15rem;
+}
+.crud-form-simple {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.seccion-miniatura,
+.seccion-sin-foto {
+  width: 56px;
+  height: 44px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid var(--mc-border);
+}
+.persona-miniatura {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--mc-border);
+}

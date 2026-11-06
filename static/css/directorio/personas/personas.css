@@ -1,0 +1,35 @@
+@import url("../directorio.css");
+.crud-form-simple {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.persona-detalle {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 28px;
+}
+.persona-detalle-contenido {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.persona-detalle-contenido img {
+  width: 130px;
+  height: 130px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+.persona-detalle h2 {
+  margin: 4px 0;
+  color: var(--mc-primary);
+}
+.persona-detalle p {
+  margin: 0;
+  font-size: 1.1rem;
+}
+@media (max-width: 600px) {
+  .persona-detalle-contenido {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

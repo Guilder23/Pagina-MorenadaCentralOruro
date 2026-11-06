@@ -7,6 +7,9 @@
         <a class="sidebar-link {% if request.resolver_match.url_name in 'listar_historias crear_historia detalle_historia editar_historia eliminar_historia subir_imagen_historia' %}active{% endif %}" href="{% url 'listar_historias' %}" title="Historia">
             <i class="fas fa-book-open"></i><span>Historia</span>
         </a>
+        <a class="sidebar-link {% if request.resolver_match.url_name in 'listar_directorio crear_directorio detalle_directorio editar_directorio eliminar_directorio subir_imagen_directorio' %}active{% endif %}" href="{% url 'listar_directorio' %}" title="Directorio">
+            <i class="fas fa-address-book"></i><span>Directorio</span>
+        </a>
         <a class="sidebar-link {% if request.resolver_match.url_name == 'listar_danzarines' %}active{% endif %}" href="{% url 'listar_danzarines' %}" title="Danzarines">
             <i class="fas fa-users"></i><span>Danzarines</span>
         </a>

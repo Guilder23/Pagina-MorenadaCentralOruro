@@ -1,0 +1,90 @@
+{%extends 'base/base.html'%}{%load static%}{%block titulo%}Detalle de
+sección{%endblock%}{%block estilos_extra%}<link
+  rel="stylesheet"
+  href="{%static 'css/directorio/secciones/crud/detalle.css'%}"
+/>{%endblock%}{%block scripts_extra%}
+<script src="{%static 'js/directorio/secciones/crud/detalle.js'%}"></script>
+{%endblock%} {%block contenido%}
+<div class="crud-header">
+  <div>
+    <a
+      class="crud-volver"
+      href="{%url 'listar_secciones_directorio' seccion.gestion_id%}"
+      ><i class="fas fa-arrow-left"></i> Volver a las secciones</a
+    >
+    <div class="crud-kicker">
+      <i class="fas fa-layer-group"></i> Gestión de carteras y personas
+    </div>
+    <h1 class="page-title">{{ seccion.nombre }}</h1>
+    <p class="page-subtitle">
+      Carteras y personas registradas en esta sección.
+    </p>
+  </div>
+</div>
+<div class="panel">
+  <div class="panel-toolbar secciones-toolbar">
+    <h2>Carteras y personas</h2>
+    <a
+      class="btn btn-primary"
+      href="{%url 'crear_persona_directorio' seccion.id%}"
+      ><i class="fas fa-plus"></i> Nueva cartera</a
+    >
+  </div>
+  <div class="table-responsive">
+    <table class="table tabla-inicio">
+      <thead>
+        <tr>
+          <th>Foto</th>
+          <th>Cartera</th>
+          <th>Persona</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%for persona in seccion.personas.all%}
+        <tr>
+          <td>
+            {%if persona.foto%}<img
+              class="persona-miniatura"
+              src="{{ persona.foto.url }}"
+              alt="{{ persona.nombre }}"
+            />{%else%}<span class="inicio-sin-foto"
+              ><i class="fas fa-user"></i></span
+            >{%endif%}
+          </td>
+          <td class="fw-600">{{ persona.cargo }}</td>
+          <td>{{ persona.nombre }}</td>
+          <td class="text-right acciones">
+            <a
+              class="btn-accion"
+              href="{%url 'detalle_persona_directorio' persona.id%}"
+              title="Ver"
+              ><i class="fas fa-eye"></i></a
+            ><a
+              class="btn-accion"
+              href="{%url 'editar_persona_directorio' persona.id%}"
+              title="Editar"
+              ><i class="fas fa-pen"></i></a
+            ><a
+              class="btn-accion peligro"
+              href="{%url 'eliminar_persona_directorio' persona.id%}"
+              title="Eliminar"
+              ><i class="fas fa-trash"></i
+            ></a>
+          </td>
+        </tr>
+        {%empty%}
+        <tr>
+          <td colspan="4">
+            <div class="empty-state">
+              <i class="fas fa-users"></i>
+              <p>Aún no hay carteras.</p>
+            </div>
+          </td>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+  </div>
+</div>
+{%endblock%}

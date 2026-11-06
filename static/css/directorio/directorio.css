@@ -1,0 +1,116 @@
+@import url("../inicio/inicio.css");
+
+.directorio-datos {
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  border: 1px solid var(--mc-border);
+  border-radius: var(--mc-radius);
+  background: var(--mc-surface);
+  box-shadow: var(--mc-shadow);
+}
+.directorio-datos strong {
+  margin-left: 18px;
+  color: var(--mc-primary);
+}
+.gestion-miniatura,
+.gestion-sin-foto {
+  width: 56px;
+  height: 44px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--mc-border);
+  border-radius: 6px;
+  object-fit: cover;
+}
+.secciones-titulo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.secciones-titulo h2 {
+  margin: 0;
+  color: var(--mc-primary);
+  font-size: 1.25rem;
+}
+.directorio-seccion {
+  margin-bottom: 18px;
+  padding: 20px;
+  border: 1px solid var(--mc-border);
+  border-radius: var(--mc-radius);
+  background: var(--mc-surface);
+  box-shadow: var(--mc-shadow);
+}
+.seccion-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--mc-border);
+}
+.seccion-cabecera img {
+  width: 76px;
+  height: 58px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+.seccion-cabecera h3 {
+  margin: 0;
+  color: var(--mc-primary);
+}
+.seccion-cabecera form {
+  margin-left: auto;
+}
+.personas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+  padding: 18px 0;
+}
+.persona-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--mc-border);
+  border-radius: 9px;
+  background: #fafcfe;
+}
+.persona-card img,
+.persona-sin-foto {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.persona-sin-foto {
+  display: grid;
+  place-items: center;
+  background: #e8f0f8;
+  color: var(--mc-primary);
+}
+.persona-card strong {
+  display: block;
+  color: var(--mc-primary);
+  font-size: 0.82rem;
+}
+.persona-card p {
+  margin: 2px 0 0;
+  font-size: 0.84rem;
+}
+.persona-card form {
+  margin-left: auto;
+}
+@media (max-width: 700px) {
+  .secciones-titulo {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .directorio-datos strong {
+    margin-left: 0;
+    display: block;
+    margin-top: 8px;
+  }
+}

@@ -1,0 +1,98 @@
+{%extends 'base/base.html'%}{%load static%}{%block titulo%}Editar
+cartera{%endblock%}{%block estilos_extra%}<link
+  rel="stylesheet"
+  href="{%static 'css/directorio/personas/crud/editar.css'%}"
+/>{%endblock%}{%block scripts_extra%}
+<script src="{%static 'js/directorio/personas/crud/editar.js'%}"></script>
+{%endblock%} {%block contenido%}
+<div class="crud-header">
+  <div>
+    <a
+      class="crud-volver"
+      href="{%url 'gestionar_personas_directorio' persona.seccion_id%}"
+      ><i class="fas fa-arrow-left"></i> Volver a carteras</a
+    >
+    <div class="crud-kicker">
+      <i class="fas fa-users"></i> Gestión de carteras
+    </div>
+    <h1 class="page-title">Editar cartera</h1>
+    <p class="page-subtitle">Actualiza los datos de la persona.</p>
+  </div>
+</div>
+<form class="crud-layout" method="post" enctype="multipart/form-data">
+  {%csrf_token%}
+  <section class="crud-panel crud-main-card">
+    <div class="crud-panel-header">
+      <span class="section-icon"><i class="fas fa-edit"></i></span>
+      <div>
+        <h2>Datos de la cartera</h2>
+        <p>Modifica el cargo y la persona.</p>
+      </div>
+    </div>
+    <div class="crud-panel-body">
+      <div class="form-group">
+        <label>Cartera <span>*</span></label
+        ><input
+          class="form-control"
+          name="cargo"
+          value="{{ persona.cargo }}"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label>Nombre de la persona <span>*</span></label
+        ><input
+          class="form-control"
+          name="nombre"
+          value="{{ persona.nombre }}"
+          required
+        />
+      </div>
+    </div>
+  </section>
+  <aside class="crud-side">
+    <section class="crud-panel media-card">
+      <div class="crud-panel-header">
+        <span class="section-icon"><i class="fas fa-image"></i></span>
+        <div>
+          <h2>Imagen de la persona</h2>
+          <p>Opcional</p>
+        </div>
+      </div>
+      <div class="crud-panel-body">
+        <label for="editarPersonaFoto">Reemplazar fotografía</label>
+        <div class="upload-box">
+          <i class="fas fa-cloud-upload-alt"></i
+          ><strong>Selecciona una imagen</strong
+          ><span>JPG, PNG o WEBP · Máximo 5 MB</span
+          ><input
+            type="file"
+            id="editarPersonaFoto"
+            name="foto"
+            accept="image/*"
+          />
+        </div>
+        {%if persona.foto%}<img
+          id="editarPersonaFotoPreview"
+          class="upload-preview visible"
+          src="{{ persona.foto.url }}"
+          alt="{{ persona.nombre }}"
+        />{%else%}<img
+          id="editarPersonaFotoPreview"
+          class="upload-preview"
+          alt="Vista previa"
+        />{%endif%}
+      </div>
+    </section>
+  </aside>
+  <div class="crud-panel-footer">
+    <a
+      class="btn btn-light"
+      href="{%url 'gestionar_personas_directorio' persona.seccion_id%}"
+      >Cancelar</a
+    ><button class="btn btn-primary" type="submit">
+      <i class="fas fa-save"></i> Actualizar cartera
+    </button>
+  </div>
+</form>
+{%endblock%}

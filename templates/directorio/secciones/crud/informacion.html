@@ -1,0 +1,73 @@
+{%extends 'base/base.html'%}{%load static%} {%block titulo%}Información de
+sección{%endblock%} {%block estilos_extra%}<link
+  rel="stylesheet"
+  href="{%static 'css/directorio/secciones/crud/detalle.css'%}"
+/>{%endblock%} {%block contenido%}
+<div class="crud-header">
+  <div>
+    <a
+      class="crud-volver"
+      href="{%url 'listar_secciones_directorio' seccion.gestion_id%}"
+    >
+      <i class="fas fa-arrow-left"></i> Volver a las secciones
+    </a>
+    <div class="crud-kicker">
+      <i class="fas fa-layer-group"></i> Detalle de sección
+    </div>
+    <h1 class="page-title">{{ seccion.nombre }}</h1>
+    <p class="page-subtitle">Información general de la sección.</p>
+  </div>
+</div>
+<div class="detail-layout section-detail-layout">
+  <section class="crud-panel detail-card">
+    <div class="crud-panel-header">
+      <span class="section-icon"><i class="fas fa-layer-group"></i></span>
+      <div>
+        <h2>Información de la sección</h2>
+        <p>Datos generales registrados.</p>
+      </div>
+    </div>
+    <div class="crud-panel-body detail-fields">
+      <div>
+        <span class="detail-label">Nombre</span
+        ><strong>{{ seccion.nombre }}</strong>
+      </div>
+      <div>
+        <span class="detail-label">Gestión</span
+        ><strong>{{ seccion.gestion.nombre }}</strong>
+      </div>
+      <div class="detail-description">
+        <span class="detail-label">Descripción</span>
+        <div>
+          {{ seccion.descripcion|safe|default:"Esta sección no tiene una descripción registrada." }}
+        </div>
+      </div>
+      <div class="detail-dates">
+        <span
+          ><i class="far fa-calendar-plus"></i><b>Creación</b>{{ seccion.fecha_creacion|date:"d/m/Y H:i" }}</span
+        ><span
+          ><i class="far fa-clock"></i><b>Actualización</b>{{ seccion.fecha_actualizacion|date:"d/m/Y H:i" }}</span
+        >
+      </div>
+    </div>
+  </section>
+  <section class="crud-panel detail-media">
+    <div class="crud-panel-header">
+      <span class="section-icon"><i class="fas fa-image"></i></span>
+      <div>
+        <h2>Imagen de la sección</h2>
+        <p>Fotografía registrada</p>
+      </div>
+    </div>
+    <div class="crud-panel-body section-information-photo">
+      {%if seccion.foto%}
+      <img src="{{ seccion.foto.url }}" alt="{{ seccion.nombre }}" />
+      {%else%}
+      <span class="inicio-sin-foto"><i class="fas fa-layer-group"></i></span>
+      {%endif%}
+    </div>
+  </section>
+</div>
+{%endblock%} {%block scripts_extra%}
+<script src="{%static 'js/directorio/secciones/crud/detalle.js'%}"></script>
+{%endblock%}

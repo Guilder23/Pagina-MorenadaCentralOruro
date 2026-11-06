@@ -1,0 +1,36 @@
+{%extends 'base/base.html'%}{%load static%}{%block titulo%}Eliminar
+gestión{%endblock%}{%block estilos_extra%}<link
+  rel="stylesheet"
+  href="{%static 'css/directorio/crud/eliminar.css'%}"
+/>{%endblock%} {%block contenido%}
+<div class="crud-header">
+  <div>
+    <a class="crud-volver" href="{%url 'listar_directorio'%}"
+      ><i class="fas fa-arrow-left"></i> Volver a Directorio</a
+    >
+    <div class="crud-kicker danger">
+      <i class="fas fa-shield-alt"></i> Acción permanente
+    </div>
+    <h1 class="page-title">Eliminar gestión</h1>
+    <p class="page-subtitle">También se eliminarán sus secciones y carteras.</p>
+  </div>
+</div>
+<form class="confirmar-panel" method="post">
+  {%csrf_token%}
+  <div class="confirmar-icono"><i class="fas fa-trash"></i></div>
+  <span class="confirmar-badge">Confirmación requerida</span>
+  <h2>¿Eliminar esta gestión?</h2>
+  <div class="confirmar-registro">
+    <i class="fas fa-address-book"></i><strong>{{ gestion.nombre }}</strong>
+  </div>
+  <p>Esta acción eliminará toda la estructura y no se puede deshacer.</p>
+  <div class="confirmar-acciones">
+    <a class="btn btn-light" href="{%url 'listar_directorio'%}">Cancelar</a
+    ><button class="btn btn-danger" type="submit">
+      <i class="fas fa-trash"></i> Sí, eliminar
+    </button>
+  </div>
+</form>
+{%endblock%}{%block scripts_extra%}
+<script src="{%static 'js/directorio/crud/eliminar.js'%}"></script>
+{%endblock%}

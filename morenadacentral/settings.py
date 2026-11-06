@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "apps.bloques.apps.BloquesConfig",
     "apps.inicio.apps.InicioConfig",
     "apps.historia.apps.HistoriaConfig",
+    "apps.directorio.apps.DirectorioConfig",
     "apps.reportes.apps.ReportesConfig",
 ]
 

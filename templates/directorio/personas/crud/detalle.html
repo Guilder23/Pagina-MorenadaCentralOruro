@@ -1,0 +1,74 @@
+{%extends 'base/base.html'%}{%load static%}{%block titulo%}Detalle de
+cartera{%endblock%}{%block estilos_extra%}<link
+  rel="stylesheet"
+  href="{%static 'css/directorio/personas/crud/detalle.css'%}"
+/>{%endblock%}{%block scripts_extra%}
+<script src="{%static 'js/directorio/personas/crud/detalle.js'%}"></script>
+{%endblock%} {%block contenido%}
+<div class="crud-header">
+  <div>
+    <a
+      class="crud-volver"
+      href="{%url 'gestionar_personas_directorio' persona.seccion_id%}"
+      ><i class="fas fa-arrow-left"></i> Volver a carteras</a
+    >
+    <div class="crud-kicker">
+      <i class="fas fa-users"></i> Detalle de cartera
+    </div>
+    <h1 class="page-title">{{ persona.cargo }}</h1>
+    <p class="page-subtitle">{{ persona.seccion.nombre }}</p>
+  </div>
+</div>
+<div class="detail-layout">
+  <section class="crud-panel detail-card">
+    <div class="crud-panel-header">
+      <span class="section-icon"><i class="fas fa-user"></i></span>
+      <div>
+        <h2>Información de la cartera</h2>
+        <p>Datos de la persona registrada.</p>
+      </div>
+    </div>
+    <div class="crud-panel-body detail-fields">
+      <div>
+        <span class="detail-label">Cartera</span
+        ><strong>{{ persona.cargo }}</strong>
+      </div>
+      <div>
+        <span class="detail-label">Persona</span
+        ><strong>{{ persona.nombre }}</strong>
+      </div>
+      <div>
+        <span class="detail-label">Sección</span
+        ><strong>{{ persona.seccion.nombre }}</strong>
+      </div>
+      <div class="detail-dates">
+        <span
+          ><i class="far fa-calendar-plus"></i><b>Creación</b>{{ persona.fecha_creacion|date:"d/m/Y H:i" }}</span
+        ><span
+          ><i class="far fa-clock"></i><b>Actualización</b>{{ persona.fecha_actualizacion|date:"d/m/Y H:i" }}</span
+        >
+      </div>
+    </div>
+  </section>
+  <section class="crud-panel detail-media">
+    <div class="crud-panel-header">
+      <span class="section-icon"><i class="fas fa-image"></i></span>
+      <div>
+        <h2>Imagen de la persona</h2>
+        <p>Fotografía registrada</p>
+      </div>
+    </div>
+    <div class="crud-panel-body">
+      {%if persona.foto%}<img
+        class="detail-photo"
+        src="{{ persona.foto.url }}"
+        alt="{{ persona.nombre }}"
+      />{%else%}
+      <div class="detail-photo-placeholder">
+        <i class="fas fa-user"></i><span>Sin fotografía</span>
+      </div>
+      {%endif%}
+    </div>
+  </section>
+</div>
+{%endblock%}

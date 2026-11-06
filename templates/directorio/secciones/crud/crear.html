@@ -1,0 +1,87 @@
+{%extends 'base/base.html'%}{%load static%}{%block titulo%}Nueva sección{%endblock%}{%block estilos_extra%}<link
+  rel="stylesheet"
+  href="{%static 'css/directorio/secciones/crud/crear.css'%}"
+/>{%endblock%}{%block scripts_extra%}
+<script src="{%static 'js/directorio/secciones/crud/crear.js'%}"></script>
+{%endblock%} {%block contenido%}
+<div class="crud-header">
+  <div>
+    <a
+      class="crud-volver"
+      href="{%url 'listar_secciones_directorio' gestion.id%}"
+      ><i class="fas fa-arrow-left"></i> Volver a las secciones</a
+    >
+    <div class="crud-kicker">
+      <i class="fas fa-layer-group"></i> Gestión de secciones
+    </div>
+    <h1 class="page-title">Nueva sección</h1>
+    <p class="page-subtitle">Agrega una sección al directorio.</p>
+  </div>
+</div>
+<form class="crud-layout" method="post" enctype="multipart/form-data">
+  {%csrf_token%}
+  <section class="crud-panel crud-main-card">
+    <div class="crud-panel-header">
+      <span class="section-icon"><i class="fas fa-layer-group"></i></span>
+      <div>
+        <h2>Datos de la sección</h2>
+        <p>La sección puede contener varias carteras.</p>
+      </div>
+    </div>
+    <div class="crud-panel-body">
+      <div class="form-group">
+        <label>Nombre <span>*</span></label
+        ><input
+          class="form-control"
+          name="nombre"
+          placeholder="Ej. Gestión"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label>Descripción</label
+        ><textarea class="form-control" name="descripcion" rows="8"></textarea>
+      </div>
+    </div>
+  </section>
+  <aside class="crud-side">
+    <section class="crud-panel media-card">
+      <div class="crud-panel-header">
+        <span class="section-icon"><i class="fas fa-image"></i></span>
+        <div>
+          <h2>Imagen de la sección</h2>
+          <p>Opcional</p>
+        </div>
+      </div>
+      <div class="crud-panel-body">
+        <label for="crearSeccionFoto">Seleccionar fotografía</label>
+        <div class="upload-box">
+          <i class="fas fa-cloud-upload-alt"></i
+          ><strong>Selecciona una imagen</strong
+          ><span>JPG, PNG o WEBP · Máximo 5 MB</span
+          ><input
+            type="file"
+            id="crearSeccionFoto"
+            name="foto"
+            accept="image/*"
+          />
+        </div>
+        <img
+          id="crearSeccionFotoPreview"
+          class="upload-preview"
+          alt="Vista previa"
+        />
+      </div>
+    </section>
+  </aside>
+  <div class="crud-panel-footer">
+    <a
+      class="btn btn-light"
+      href="{%url 'listar_secciones_directorio' gestion.id%}"
+      >Cancelar</a
+    ><button class="btn btn-primary" type="submit">
+      <i class="fas fa-save"></i> Guardar sección
+    </button>
+  </div>
+</form>
+{%endblock%}
