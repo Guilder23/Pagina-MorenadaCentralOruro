@@ -1,0 +1,7 @@
+/* Estructura compartida para el detalle de un registro. */
+@import url("../../inicio/crud/detalle.css");
+
+/* Contenido descriptivo de la reseña presidencial. */
+.detalle-descripcion {
+    overflow-wrap: anywhere;
+}

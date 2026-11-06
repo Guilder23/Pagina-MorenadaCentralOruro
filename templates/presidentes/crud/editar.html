@@ -1,0 +1,136 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Editar presidente{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/presidentes/crud/editar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/presidentes/crud/_editor.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    {% with valor=datos|default:presidente %}
+        <!-- Encabezado y navegación de regreso. -->
+        <header class="crud-header">
+            <div>
+                <a class="crud-volver" href="{% url 'listar_presidentes' %}">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver a Presidentes
+                </a>
+                <div class="crud-kicker">
+                    <i class="fas fa-user-tie"></i>
+                    Gestión de presidentes
+                </div>
+                <h1 class="page-title">Editar presidente</h1>
+                <p class="page-subtitle">
+                    Actualiza los datos y la reseña del periodo.
+                </p>
+            </div>
+        </header>
+
+        <!-- Formulario de actualización del presidente. -->
+        <form
+            class="crud-layout"
+            method="post"
+            enctype="multipart/form-data"
+            id="formPresidente"
+            data-upload-url="{% url 'subir_imagen_presidente' %}"
+        >
+            {% csrf_token %}
+
+            <!-- Nombre, periodo y reseña. -->
+            <section class="crud-panel crud-main-card">
+                <div class="crud-panel-header">
+                    <span class="section-icon"><i class="fas fa-edit"></i></span>
+                    <div>
+                        <h2>Información principal</h2>
+                        <p>Modifica los datos del presidente.</p>
+                    </div>
+                </div>
+                <div class="crud-panel-body">
+                    <div class="form-group">
+                        <label for="nombrePresidente">Nombre completo <span>*</span></label>
+                        <input
+                            class="form-control"
+                            id="nombrePresidente"
+                            name="nombre"
+                            maxlength="150"
+                            value="{{ valor.nombre }}"
+                            required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="periodoPresidente">Periodo de gestión <span>*</span></label>
+                        <input
+                            class="form-control"
+                            id="periodoPresidente"
+                            name="periodo"
+                            maxlength="100"
+                            value="{{ valor.periodo }}"
+                            required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label>Reseña <span>*</span></label>
+                        {% include "presidentes/crud/_editor.html" with editor_value=valor.descripcion %}
+                    </div>
+                </div>
+            </section>
+
+            <!-- Fotografía actual, reemplazo y vista previa. -->
+            <aside class="crud-side">
+                <section class="crud-panel media-card">
+                    <div class="crud-panel-header">
+                        <span class="section-icon"><i class="fas fa-image"></i></span>
+                        <div>
+                            <h2>Fotografía</h2>
+                            <p>Opcional</p>
+                        </div>
+                    </div>
+                    <div class="crud-panel-body">
+                        <label for="fotoPresidente">Reemplazar fotografía</label>
+                        <div class="upload-box">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <strong>Selecciona una imagen</strong>
+                            <span>JPG, PNG o WEBP · Máximo 5 MB</span>
+                            <input
+                                type="file"
+                                id="fotoPresidente"
+                                name="foto"
+                                accept="image/*"
+                            >
+                        </div>
+                        {% if presidente.foto %}
+                            <img
+                                id="fotoPresidentePreview"
+                                class="upload-preview visible"
+                                src="{{ presidente.foto.url }}"
+                                alt="{{ presidente.nombre }}"
+                            >
+                        {% else %}
+                            <img
+                                id="fotoPresidentePreview"
+                                class="upload-preview"
+                                alt="Vista previa de la fotografía"
+                            >
+                        {% endif %}
+                    </div>
+                </section>
+            </aside>
+
+            <!-- Acciones para guardar o cancelar. -->
+            <footer class="crud-panel-footer">
+                <a class="btn btn-light" href="{% url 'listar_presidentes' %}">Cancelar</a>
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-save"></i>
+                    Actualizar presidente
+                </button>
+            </footer>
+        </form>
+    {% endwith %}
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/presidentes/crud/_editor.js' %}"></script>
+    <script src="{% static 'js/presidentes/crud/editar.js' %}"></script>
+{% endblock %}

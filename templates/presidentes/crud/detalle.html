@@ -1,0 +1,102 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Detalle de presidente{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/presidentes/crud/detalle.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    <!-- Identificación del presidente y acceso a edición. -->
+    <header class="crud-header">
+        <div>
+            <a class="crud-volver" href="{% url 'listar_presidentes' %}">
+                <i class="fas fa-arrow-left"></i>
+                Volver a Presidentes
+            </a>
+            <div class="crud-kicker">
+                <i class="fas fa-user-tie"></i>
+                Gestión de presidentes
+            </div>
+            <h1 class="page-title">Detalle de presidente</h1>
+            <p class="page-subtitle">
+                Consulta la trayectoria de este periodo presidencial.
+            </p>
+        </div>
+        <a class="btn btn-primary" href="{% url 'editar_presidente' presidente.id %}">
+            <i class="fas fa-pen"></i>
+            Editar
+        </a>
+    </header>
+
+    <!-- Reseña, datos del periodo y fotografía. -->
+    <div class="crud-layout">
+        <article class="crud-panel detalle-panel">
+            <div class="crud-panel-header">
+                <span class="section-icon"><i class="fas fa-eye"></i></span>
+                <div>
+                    <h2>Información principal</h2>
+                    <p>Periodo presidencial registrado.</p>
+                </div>
+            </div>
+            <div class="crud-panel-body">
+                <div class="detalle-titulo">
+                    <span class="detalle-etiqueta">
+                        Presidente · {{ presidente.periodo }}
+                    </span>
+                    <h2>{{ presidente.nombre }}</h2>
+                </div>
+                <div class="detalle-descripcion">
+                    {{ presidente.descripcion|safe }}
+                </div>
+            </div>
+        </article>
+
+        <!-- Fotografía o estado vacío. -->
+        <aside class="crud-side">
+            <section class="crud-panel media-card">
+                <div class="crud-panel-header">
+                    <span class="section-icon"><i class="fas fa-image"></i></span>
+                    <div>
+                        <h2>Fotografía</h2>
+                        <p>
+                            {% if presidente.foto %}
+                                Fotografía publicada
+                            {% else %}
+                                Sin fotografía
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div class="crud-panel-body">
+                    {% if presidente.foto %}
+                        <img
+                            class="detalle-foto"
+                            src="{{ presidente.foto.url }}"
+                            alt="{{ presidente.nombre }}"
+                        >
+                    {% else %}
+                        <div class="detalle-sin-foto">
+                            <i class="fas fa-user-tie"></i>
+                            <span>No se agregó una fotografía.</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </section>
+        </aside>
+
+        <!-- Navegación al listado y a la edición. -->
+        <footer class="crud-panel-footer">
+            <a class="btn btn-light" href="{% url 'listar_presidentes' %}">Volver</a>
+            <a class="btn btn-primary" href="{% url 'editar_presidente' presidente.id %}">
+                <i class="fas fa-pen"></i>
+                Editar presidente
+            </a>
+        </footer>
+    </div>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/presidentes/crud/detalle.js' %}"></script>
+{% endblock %}

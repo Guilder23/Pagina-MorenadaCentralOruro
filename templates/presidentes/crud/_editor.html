@@ -1,0 +1,53 @@
+{% load static %}
+
+<!-- Barra con acciones de formato disponibles. -->
+<div class="editor-enriquecido">
+    <div class="editor-barra" role="toolbar" aria-label="Formato de texto">
+        <button type="button" class="editor-boton" data-command="bold" aria-label="Negrita">
+            <i class="fas fa-bold"></i>
+        </button>
+        <button type="button" class="editor-boton" data-command="italic" aria-label="Cursiva">
+            <i class="fas fa-italic"></i>
+        </button>
+        <button type="button" class="editor-boton" data-command="createLink" aria-label="Enlace">
+            <i class="fas fa-link"></i>
+        </button>
+        <button
+            type="button"
+            class="editor-boton"
+            data-command="insertUnorderedList"
+            aria-label="Lista sin ordenar"
+        >
+            <i class="fas fa-list-ul"></i>
+        </button>
+        <button
+            type="button"
+            class="editor-boton"
+            data-command="insertOrderedList"
+            aria-label="Lista ordenada"
+        >
+            <i class="fas fa-list-ol"></i>
+        </button>
+        <button type="button" class="editor-boton editor-imagen" aria-label="Insertar imagen">
+            <i class="fas fa-image"></i>
+        </button>
+        <select class="editor-formato" aria-label="Formato de bloque">
+            <option value="p">Párrafo</option>
+            <option value="h2">Título</option>
+            <option value="h3">Subtítulo</option>
+            <option value="blockquote">Cita</option>
+        </select>
+        <input type="file" class="editor-archivo-imagen" accept="image/*" hidden>
+    </div>
+
+    <!-- Área editable y campo que se envía al servidor. -->
+    <div
+        class="editor-area"
+        contenteditable="true"
+        data-placeholder="Escribe una reseña sobre el periodo de gestión..."
+        role="textbox"
+        aria-multiline="true"
+        aria-label="Reseña del presidente"
+    >{{ editor_value|safe }}</div>
+    <textarea name="descripcion" class="editor-valor" hidden></textarea>
+</div>

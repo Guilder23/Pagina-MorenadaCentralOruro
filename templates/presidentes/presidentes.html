@@ -1,0 +1,189 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Presidentes{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/presidentes/presidentes.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    <!-- Encabezado y acceso al formulario de creación. -->
+    <section class="page-header">
+        <div>
+            <h1 class="page-title">Gestión de presidentes</h1>
+            <p class="page-subtitle">
+                Administra la memoria de quienes presidieron la fraternidad.
+            </p>
+        </div>
+        <div class="page-acciones">
+            <a class="btn btn-primary btn-nuevo" href="{% url 'crear_presidente' %}">
+                <i class="fas fa-plus"></i>
+                Nuevo presidente
+            </a>
+        </div>
+    </section>
+
+    <!-- Resumen de registros y fotografías. -->
+    <section class="stats-grid" aria-label="Resumen de presidentes">
+        <article class="stat-card">
+            <span class="stat-icon stat-total"><i class="fas fa-user-tie"></i></span>
+            <div>
+                <div class="stat-value">{{ total_general }}</div>
+                <div class="stat-label">Presidentes registrados</div>
+            </div>
+        </article>
+        <article class="stat-card">
+            <span class="stat-icon stat-ok"><i class="fas fa-image"></i></span>
+            <div>
+                <div class="stat-value">{{ total_con_foto }}</div>
+                <div class="stat-label">Con fotografía</div>
+            </div>
+        </article>
+        <article class="stat-card">
+            <span class="stat-icon stat-off"><i class="fas fa-file-alt"></i></span>
+            <div>
+                <div class="stat-value">{{ total_sin_foto }}</div>
+                <div class="stat-label">Sin fotografía</div>
+            </div>
+        </article>
+    </section>
+
+    <!-- Búsqueda, tabla y paginación de presidentes. -->
+    <section class="panel" aria-label="Listado de presidentes">
+        <div class="panel-toolbar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input
+                    type="search"
+                    class="form-control"
+                    id="buscarPresidentes"
+                    placeholder="Buscar por nombre, periodo o reseña..."
+                    value="{{ q }}"
+                    aria-label="Buscar presidentes"
+                >
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table tabla-inicio">
+                <thead>
+                    <tr>
+                        <th>Foto</th>
+                        <th>Presidente</th>
+                        <th>Periodo</th>
+                        <th>Reseña</th>
+                        <th>Actualizado</th>
+                        <th class="text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for presidente in presidentes %}
+                        <tr>
+                            <td>
+                                {% if presidente.foto %}
+                                    <img
+                                        class="inicio-miniatura"
+                                        src="{{ presidente.foto.url }}"
+                                        alt="{{ presidente.nombre }}"
+                                    >
+                                {% else %}
+                                    <span class="inicio-sin-foto">
+                                        <i class="fas fa-user-tie"></i>
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="fw-600">{{ presidente.nombre }}</td>
+                            <td>{{ presidente.periodo }}</td>
+                            <td class="descripcion-corta">
+                                {{ presidente.descripcion|striptags|truncatechars:90 }}
+                            </td>
+                            <td>{{ presidente.fecha_actualizacion|date:"d/m/Y H:i" }}</td>
+                            <td class="text-right acciones">
+                                <a
+                                    class="btn-accion"
+                                    href="{% url 'detalle_presidente' presidente.id %}"
+                                    title="Ver"
+                                    aria-label="Ver a {{ presidente.nombre }}"
+                                >
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a
+                                    class="btn-accion"
+                                    href="{% url 'editar_presidente' presidente.id %}"
+                                    title="Editar"
+                                    aria-label="Editar a {{ presidente.nombre }}"
+                                >
+                                    <i class="fas fa-pen"></i>
+                                </a>
+                                {% if user.is_superuser or user.perfil.rol == 'administrador' %}
+                                    <a
+                                        class="btn-accion peligro"
+                                        href="{% url 'eliminar_presidente' presidente.id %}"
+                                        title="Eliminar"
+                                        aria-label="Eliminar a {{ presidente.nombre }}"
+                                    >
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <i class="fas fa-user-tie"></i>
+                                    <p>No se encontraron presidentes.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <footer class="panel-footer">
+            <span class="resumen">
+                Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }}
+                de {{ paginator.count }}
+            </span>
+            {% if paginator.num_pages > 1 %}
+                <nav aria-label="Paginación de presidentes">
+                    <ul class="pagination pagination-sm mb-0">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a
+                                    class="page-link"
+                                    href="?page={{ page_obj.previous_page_number }}&amp;q={{ q|urlencode }}"
+                                    aria-label="Página anterior"
+                                >
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="page-item active">
+                            <span class="page-link">
+                                {{ page_obj.number }} / {{ paginator.num_pages }}
+                            </span>
+                        </li>
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a
+                                    class="page-link"
+                                    href="?page={{ page_obj.next_page_number }}&amp;q={{ q|urlencode }}"
+                                    aria-label="Página siguiente"
+                                >
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </footer>
+    </section>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/presidentes/presidentes.js' %}"></script>
+{% endblock %}

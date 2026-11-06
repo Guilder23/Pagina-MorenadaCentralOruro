@@ -1,0 +1,7 @@
+/* Estructura compartida para crear un registro de gestión. */
+@import url("../../inicio/crud/crear.css");
+
+/* Ajustes propios del formulario de presidentes. */
+#periodoPresidente {
+    max-width: 100%;
+}

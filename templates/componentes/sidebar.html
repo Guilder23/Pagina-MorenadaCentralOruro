@@ -7,6 +7,9 @@
         <a class="sidebar-link {% if request.resolver_match.url_name in 'listar_historias crear_historia detalle_historia editar_historia eliminar_historia subir_imagen_historia' %}active{% endif %}" href="{% url 'listar_historias' %}" title="Historia">
             <i class="fas fa-book-open"></i><span>Historia</span>
         </a>
+        <a class="sidebar-link {% if request.resolver_match.url_name in 'listar_presidentes crear_presidente detalle_presidente editar_presidente eliminar_presidente subir_imagen_presidente' %}active{% endif %}" href="{% url 'listar_presidentes' %}" title="Presidentes">
+            <i class="fas fa-user-tie"></i><span>Presidentes</span>
+        </a>
         <a class="sidebar-link {% if request.resolver_match.url_name in 'listar_directorio crear_directorio detalle_directorio editar_directorio eliminar_directorio subir_imagen_directorio' %}active{% endif %}" href="{% url 'listar_directorio' %}" title="Directorio">
             <i class="fas fa-address-book"></i><span>Directorio</span>
         </a>

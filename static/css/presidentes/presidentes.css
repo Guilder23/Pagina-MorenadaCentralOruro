@@ -1,0 +1,11 @@
+/* Estilos compartidos del listado y paneles de gestión. */
+@import url("../inicio/inicio.css");
+
+/* Ajustes propios del listado de presidentes. */
+.panel .search-box {
+    max-width: 520px;
+}
+
+.tabla-inicio td {
+    vertical-align: middle;
+}

@@ -1,0 +1,7 @@
+/* Estructura compartida para confirmar una eliminación. */
+@import url("../../inicio/crud/eliminar.css");
+
+/* Evita que el nombre y periodo desborden el panel de confirmación. */
+.confirmar-registro strong {
+    overflow-wrap: anywhere;
+}

@@ -13,6 +13,7 @@ urlpatterns = [
     path("", include("apps.bloques.urls")),
     path("", include("apps.inicio.urls")),
     path("", include("apps.historia.urls")),
+    path("", include("apps.presidentes.urls")),
     path("", include("apps.directorio.urls")),
     path("", include("apps.reportes.urls")),
 ]
