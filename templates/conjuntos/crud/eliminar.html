@@ -1,0 +1,43 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Eliminar conjunto{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/conjuntos/crud/eliminar.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    {# Contexto de la acción y navegación de regreso al listado. #}
+    <header class="crud-header">
+        <div>
+            <a class="crud-volver" href="{% url 'listar_conjuntos' %}">
+                <i class="fas fa-arrow-left"></i> Volver a Conjuntos
+            </a>
+            <div class="crud-kicker danger"><i class="fas fa-shield-alt"></i> Acción permanente</div>
+            <h1 class="page-title">Eliminar conjunto</h1>
+            <p class="page-subtitle">Revisa la información antes de confirmar.</p>
+        </div>
+    </header>
+
+    {# Solicita confirmación antes de eliminar permanentemente. #}
+    <form class="confirmar-panel" method="post" id="formEliminarConjunto">
+        {% csrf_token %}
+        <div class="confirmar-icono"><i class="fas fa-trash"></i></div>
+        <span class="confirmar-badge">Confirmación requerida</span>
+        <h2>¿Eliminar este registro?</h2>
+        <div class="confirmar-registro">
+            <i class="fas fa-users"></i>
+            <strong>{{ conjunto.nombre }}</strong>
+        </div>
+        <p>Esta acción eliminará permanentemente el registro y no se puede deshacer.</p>
+        <div class="confirmar-acciones">
+            <a class="btn btn-light" href="{% url 'listar_conjuntos' %}">Cancelar</a>
+            <button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i> Sí, eliminar</button>
+        </div>
+    </form>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/conjuntos/crud/eliminar.js' %}"></script>
+{% endblock %}

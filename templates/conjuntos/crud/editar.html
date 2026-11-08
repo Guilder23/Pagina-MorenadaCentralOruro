@@ -1,0 +1,88 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Editar conjunto{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/conjuntos/crud/editar.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    {% with valor=datos|default:conjunto %}
+        {# Encabezado y navegación de regreso al listado. #}
+        <header class="crud-header">
+            <div>
+                <a class="crud-volver" href="{% url 'listar_conjuntos' %}">
+                    <i class="fas fa-arrow-left"></i> Volver a Conjuntos
+                </a>
+                <div class="crud-kicker"><i class="fas fa-users"></i> Gestión de conjuntos</div>
+                <h1 class="page-title">Editar conjunto afiliado</h1>
+                <p class="page-subtitle">Actualiza el orden, nombre, historia, enlace o fotografía.</p>
+            </div>
+        </header>
+
+        {# Formulario precargado para actualizar un conjunto. #}
+        <form class="crud-layout" method="post" enctype="multipart/form-data" id="formConjunto">
+            {% csrf_token %}
+            <section class="crud-panel crud-main-card">
+                <div class="crud-panel-header">
+                    <span class="section-icon"><i class="fas fa-edit"></i></span>
+                    <div><h2>Información principal</h2><p>Modifica los datos del conjunto.</p></div>
+                </div>
+                <div class="crud-panel-body">
+                    <div class="form-group">
+                        <label for="ordenConjunto">Orden <span>*</span></label>
+                        <input class="form-control" type="number" id="ordenConjunto" name="orden" min="1" value="{{ valor.orden }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombreConjunto">Nombre <span>*</span></label>
+                        <input class="form-control" id="nombreConjunto" name="nombre" maxlength="200" value="{{ valor.nombre }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="historiaConjunto">Historia <span>*</span></label>
+                        <textarea class="form-control historia-textarea" id="historiaConjunto" name="historia" rows="12" required>{{ valor.historia }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="enlaceConjunto">Enlace</label>
+                        <input class="form-control" type="url" id="enlaceConjunto" name="enlace" maxlength="500" placeholder="https://ejemplo.com" value="{{ valor.enlace }}">
+                        <small class="field-help">Opcional. Ingresa una dirección que comience con http:// o https://.</small>
+                    </div>
+                </div>
+            </section>
+
+            {# Muestra la foto actual y permite reemplazarla. #}
+            <aside class="crud-side">
+                <section class="crud-panel media-card">
+                    <div class="crud-panel-header">
+                        <span class="section-icon"><i class="fas fa-image"></i></span>
+                        <div><h2>Fotografía</h2><p>Opcional</p></div>
+                    </div>
+                    <div class="crud-panel-body">
+                        <label for="fotoConjunto">Reemplazar fotografía</label>
+                        <div class="upload-box">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <strong>Selecciona una imagen</strong>
+                            <span>JPG, PNG o WEBP · Máximo 5 MB</span>
+                            <input type="file" id="fotoConjunto" name="foto" accept="image/*">
+                        </div>
+                        {% if conjunto.foto %}
+                            <img id="fotoConjuntoPreview" class="upload-preview visible" src="{{ conjunto.foto.url }}" alt="{{ conjunto.nombre }}">
+                        {% else %}
+                            <img id="fotoConjuntoPreview" class="upload-preview" alt="Vista previa de la fotografía">
+                        {% endif %}
+                    </div>
+                </section>
+            </aside>
+
+            {# Acciones para cancelar o guardar los cambios. #}
+            <footer class="crud-panel-footer">
+                <a class="btn btn-light" href="{% url 'listar_conjuntos' %}">Cancelar</a>
+                <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> Actualizar conjunto</button>
+            </footer>
+        </form>
+    {% endwith %}
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/conjuntos/crud/editar.js' %}"></script>
+{% endblock %}

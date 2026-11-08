@@ -1,0 +1,82 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Nuevo conjunto{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/conjuntos/crud/crear.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    {# Encabezado y navegación de regreso al listado. #}
+    <header class="crud-header">
+        <div>
+            <a class="crud-volver" href="{% url 'listar_conjuntos' %}">
+                <i class="fas fa-arrow-left"></i> Volver a Conjuntos
+            </a>
+            <div class="crud-kicker"><i class="fas fa-users"></i> Gestión de conjuntos</div>
+            <h1 class="page-title">Nuevo conjunto afiliado</h1>
+            <p class="page-subtitle">Registra el orden, nombre, historia, enlace y fotografía.</p>
+        </div>
+    </header>
+
+    {# Formulario de alta con orden, nombre, enlace y foto opcional. #}
+    <form class="crud-layout" method="post" enctype="multipart/form-data" id="formConjunto">
+        {% csrf_token %}
+        <section class="crud-panel crud-main-card">
+            <div class="crud-panel-header">
+                <span class="section-icon"><i class="fas fa-edit"></i></span>
+                <div><h2>Información principal</h2><p>Completa los datos del conjunto afiliado.</p></div>
+            </div>
+            <div class="crud-panel-body">
+                <div class="form-group">
+                    <label for="ordenConjunto">Orden <span>*</span></label>
+                    <input class="form-control" type="number" id="ordenConjunto" name="orden" min="1" value="{{ datos.orden|default:'1' }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="nombreConjunto">Nombre <span>*</span></label>
+                    <input class="form-control" id="nombreConjunto" name="nombre" maxlength="200" value="{{ datos.nombre|default:'' }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="historiaConjunto">Historia <span>*</span></label>
+                    <textarea class="form-control historia-textarea" id="historiaConjunto" name="historia" rows="12" required>{{ datos.historia|default:'' }}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="enlaceConjunto">Enlace</label>
+                    <input class="form-control" type="url" id="enlaceConjunto" name="enlace" maxlength="500" placeholder="https://ejemplo.com" value="{{ datos.enlace|default:'' }}">
+                    <small class="field-help">Opcional. Ingresa una dirección que comience con http:// o https://.</small>
+                </div>
+            </div>
+        </section>
+
+        {# Carga opcional de foto con vista previa. #}
+        <aside class="crud-side">
+            <section class="crud-panel media-card">
+                <div class="crud-panel-header">
+                    <span class="section-icon"><i class="fas fa-image"></i></span>
+                    <div><h2>Fotografía</h2><p>Opcional</p></div>
+                </div>
+                <div class="crud-panel-body">
+                    <label for="fotoConjunto">Foto del conjunto</label>
+                    <div class="upload-box">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <strong>Selecciona una imagen</strong>
+                        <span>JPG, PNG o WEBP · Máximo 5 MB</span>
+                        <input type="file" id="fotoConjunto" name="foto" accept="image/*">
+                    </div>
+                    <img id="fotoConjuntoPreview" class="upload-preview" alt="Vista previa de la fotografía">
+                </div>
+            </section>
+        </aside>
+
+        {# Acciones para cancelar o crear el conjunto. #}
+        <footer class="crud-panel-footer">
+            <a class="btn btn-light" href="{% url 'listar_conjuntos' %}">Cancelar</a>
+            <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> Guardar conjunto</button>
+        </footer>
+    </form>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/conjuntos/crud/crear.js' %}"></script>
+{% endblock %}

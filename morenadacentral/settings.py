@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "apps.presidentes.apps.PresidentesConfig",
     # App para administrar personajes de la danza.
     "apps.personajes.apps.PersonajesConfig",
+    # App para administrar conjuntos afiliados.
+    "apps.conjuntos.apps.ConjuntosConfig",
     "apps.directorio.apps.DirectorioConfig",
     "apps.reportes.apps.ReportesConfig",
 ]

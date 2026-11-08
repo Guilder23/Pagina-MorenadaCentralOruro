@@ -1,0 +1,85 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Detalle de conjunto{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/conjuntos/crud/detalle.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    {# Identificación del conjunto y acceso directo a edición. #}
+    <header class="crud-header">
+        <div>
+            <a class="crud-volver" href="{% url 'listar_conjuntos' %}">
+                <i class="fas fa-arrow-left"></i> Volver a Conjuntos
+            </a>
+            <div class="crud-kicker"><i class="fas fa-users"></i> Gestión de conjuntos</div>
+            <h1 class="page-title">Detalle del conjunto</h1>
+            <p class="page-subtitle">Consulta la información del conjunto afiliado.</p>
+        </div>
+        <a class="btn btn-primary" href="{% url 'editar_conjunto' conjunto.id %}">
+            <i class="fas fa-pen"></i> Editar
+        </a>
+    </header>
+
+    {# Datos registrados y fotografía del conjunto. #}
+    <div class="crud-layout">
+        <article class="crud-panel detalle-panel">
+            <div class="crud-panel-header">
+                <span class="section-icon"><i class="fas fa-info-circle"></i></span>
+                <div><h2>Información principal</h2><p>Datos del conjunto afiliado.</p></div>
+            </div>
+            <div class="crud-panel-body">
+                <div class="detalle-titulo">
+                    <span class="detalle-etiqueta">Orden {{ conjunto.orden }}</span>
+                    <h2>{{ conjunto.nombre }}</h2>
+                </div>
+                <div class="detalle-descripcion">
+                    <h3>Historia</h3>
+                    <p>{{ conjunto.historia|linebreaksbr }}</p>
+                    {% if conjunto.enlace %}
+                        <p><strong>Enlace:</strong> <a href="{{ conjunto.enlace }}" target="_blank" rel="noopener noreferrer">{{ conjunto.enlace }}</a></p>
+                    {% else %}
+                        <p class="text-muted">No se registró un enlace.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+
+        {# Fotografía o indicador cuando no se ha cargado una. #}
+        <aside class="crud-side">
+            <section class="crud-panel media-card">
+                <div class="crud-panel-header">
+                    <span class="section-icon"><i class="fas fa-image"></i></span>
+                    <div>
+                        <h2>Fotografía</h2>
+                        <p>{% if conjunto.foto %}Fotografía publicada{% else %}Sin fotografía{% endif %}</p>
+                    </div>
+                </div>
+                <div class="crud-panel-body">
+                    {% if conjunto.foto %}
+                        <img class="detalle-foto" src="{{ conjunto.foto.url }}" alt="{{ conjunto.nombre }}">
+                    {% else %}
+                        <div class="detalle-sin-foto">
+                            <i class="fas fa-users"></i>
+                            <span>No se agregó una fotografía.</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </section>
+        </aside>
+
+        {# Acciones para volver al listado o editar el conjunto. #}
+        <footer class="crud-panel-footer">
+            <a class="btn btn-light" href="{% url 'listar_conjuntos' %}">Volver</a>
+            <a class="btn btn-primary" href="{% url 'editar_conjunto' conjunto.id %}">
+                <i class="fas fa-pen"></i> Editar conjunto
+            </a>
+        </footer>
+    </div>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/conjuntos/crud/detalle.js' %}"></script>
+{% endblock %}

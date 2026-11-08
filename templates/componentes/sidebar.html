@@ -14,6 +14,10 @@
         <a class="sidebar-link {% if request.resolver_match.url_name in 'listar_personajes crear_personaje detalle_personaje editar_personaje eliminar_personaje' %}active{% endif %}" href="{% url 'listar_personajes' %}" title="Personajes">
             <i class="fas fa-theater-masks"></i><span>Personajes</span>
         </a>
+        {# Acceso a todas las pantallas de administración de conjuntos. #}
+        <a class="sidebar-link {% if request.resolver_match.url_name in 'listar_conjuntos crear_conjunto detalle_conjunto editar_conjunto eliminar_conjunto' %}active{% endif %}" href="{% url 'listar_conjuntos' %}" title="Conjuntos">
+            <i class="fas fa-users"></i><span>Conjuntos</span>
+        </a>
         <a class="sidebar-link {% if request.resolver_match.url_name in 'listar_directorio crear_directorio detalle_directorio editar_directorio eliminar_directorio subir_imagen_directorio' %}active{% endif %}" href="{% url 'listar_directorio' %}" title="Directorio">
             <i class="fas fa-address-book"></i><span>Directorio</span>
         </a>

@@ -1,0 +1,156 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Conjuntos afiliados{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/conjuntos/conjuntos.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    {# Encabezado y acceso al formulario de creación. #}
+    <section class="page-header">
+        <div>
+            <h1 class="page-title">Gestión de conjuntos afiliados</h1>
+            <p class="page-subtitle">Administra el orden, historia y fotografía de los conjuntos.</p>
+        </div>
+        <div class="page-acciones">
+            <a class="btn btn-primary btn-nuevo" href="{% url 'crear_conjunto' %}">
+                <i class="fas fa-plus"></i> Nuevo conjunto
+            </a>
+        </div>
+    </section>
+
+    {# Resumen de conjuntos registrados y fotografías disponibles. #}
+    <section class="stats-grid" aria-label="Resumen de conjuntos">
+        <article class="stat-card">
+            <span class="stat-icon stat-total"><i class="fas fa-users"></i></span>
+            <div>
+                <div class="stat-value">{{ total_general }}</div>
+                <div class="stat-label">Conjuntos registrados</div>
+            </div>
+        </article>
+        <article class="stat-card">
+            <span class="stat-icon stat-ok"><i class="fas fa-image"></i></span>
+            <div>
+                <div class="stat-value">{{ total_con_foto }}</div>
+                <div class="stat-label">Con fotografía</div>
+            </div>
+        </article>
+        <article class="stat-card">
+            <span class="stat-icon stat-off"><i class="fas fa-file-alt"></i></span>
+            <div>
+                <div class="stat-value">{{ total_sin_foto }}</div>
+                <div class="stat-label">Sin fotografía</div>
+            </div>
+        </article>
+    </section>
+
+    {# Búsqueda, tabla ordenada y paginación del listado. #}
+    <section class="panel" aria-label="Listado de conjuntos afiliados">
+        <div class="panel-toolbar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input
+                    type="search"
+                    class="form-control"
+                    id="buscarConjuntos"
+                    placeholder="Buscar por nombre o historia..."
+                    value="{{ q }}"
+                    aria-label="Buscar conjuntos"
+                >
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table tabla-inicio">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Foto</th>
+                        <th>Nombre</th>
+                        <th>Historia</th>
+                        <th class="text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for conjunto in conjuntos %}
+                        <tr>
+                            <td>{{ conjunto.orden }}</td>
+                            {# Miniatura previa al nombre, igual que en personajes. #}
+                            <td>
+                                {% if conjunto.foto %}
+                                    <img class="inicio-miniatura" src="{{ conjunto.foto.url }}" alt="{{ conjunto.nombre }}">
+                                {% else %}
+                                    <span class="inicio-sin-foto" aria-label="Sin fotografía">
+                                        <i class="fas fa-users"></i>
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="fw-600">{{ conjunto.nombre }}</td>
+                            {# Recorta la historia para conservar filas compactas. #}
+                            <td class="descripcion-corta">{{ conjunto.historia|striptags|truncatechars:100 }}</td>
+                            <td class="text-right acciones">
+                                <a class="btn-accion" href="{% url 'detalle_conjunto' conjunto.id %}" title="Ver" aria-label="Ver {{ conjunto.nombre }}">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a class="btn-accion" href="{% url 'editar_conjunto' conjunto.id %}" title="Editar" aria-label="Editar {{ conjunto.nombre }}">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+                                <a class="btn-accion peligro" href="{% url 'eliminar_conjunto' conjunto.id %}" title="Eliminar" aria-label="Eliminar {{ conjunto.nombre }}">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <i class="fas fa-users"></i>
+                                    <p>No se encontraron conjuntos afiliados.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <footer class="panel-footer">
+            <span class="resumen">
+                {% if paginator.count %}
+                    Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }} de {{ paginator.count }}
+                {% else %}
+                    Mostrando 0 de 0
+                {% endif %}
+            </span>
+            {% if paginator.num_pages > 1 %}
+                <nav aria-label="Paginación de conjuntos">
+                    <ul class="pagination pagination-sm mb-0">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&amp;q={{ q|urlencode }}" aria-label="Página anterior">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_obj.number }} / {{ paginator.num_pages }}</span>
+                        </li>
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}&amp;q={{ q|urlencode }}" aria-label="Página siguiente">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </footer>
+    </section>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/conjuntos/conjuntos.js' %}"></script>
+{% endblock %}

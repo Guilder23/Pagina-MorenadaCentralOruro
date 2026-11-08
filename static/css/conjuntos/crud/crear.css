@@ -1,0 +1,13 @@
+@import url("../../inicio/crud/crear.css");
+
+/* Mantiene el campo de orden compacto dentro del formulario. */
+#ordenConjunto {
+    max-width: 180px;
+}
+
+/* Facilita la escritura y lectura de la historia del conjunto. */
+.historia-textarea {
+    min-height: 260px;
+    resize: vertical;
+    line-height: 1.65;
+}

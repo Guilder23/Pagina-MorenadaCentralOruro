@@ -1,0 +1,7 @@
+@import url("../../inicio/crud/detalle.css");
+
+/* Ajusta enlaces extensos al ancho disponible del panel de detalle. */
+.detalle-descripcion {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
