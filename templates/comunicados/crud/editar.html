@@ -1,0 +1,92 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block titulo %}Editar comunicado{% endblock %}
+{% block estilos_extra %}<link rel="stylesheet" href="{% static 'css/comunicados/crud/editar.css' %}">{% endblock %}
+
+{% block contenido %}
+<header class="crud-header">
+    <div>
+        <a class="crud-volver" href="{% url 'listar_comunicados' %}"><i class="fas fa-arrow-left"></i> Volver a Comunicados</a>
+        <div class="crud-kicker"><i class="fas fa-bullhorn"></i> Gestión de comunicados</div>
+        <h1 class="page-title">Editar comunicado</h1>
+        <p class="page-subtitle">Define el mensaje, sus destinatarios y cuándo estará disponible.</p>
+    </div>
+</header>
+
+<form class="crud-layout comunicado-form-layout" method="post" enctype="multipart/form-data" id="formComunicado">
+    {% csrf_token %}
+    <section class="crud-panel crud-main-card">
+        <div class="crud-panel-header"><span class="section-icon"><i class="fas fa-edit"></i></span><div><h2>Información principal</h2><p>Completa el aviso que recibirán los danzarines.</p></div></div>
+        <div class="crud-panel-body">
+            <div class="form-group">
+                <label for="tituloComunicado">Título <b>*</b></label>
+                <input class="form-control" type="text" id="tituloComunicado" name="titulo" maxlength="200" value="{{ datos.titulo|default:'' }}" required>
+                {% if errores.titulo %}<small class="campo-error">{{ errores.titulo }}</small>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="contenidoComunicado">Contenido <b>*</b></label>
+                <textarea class="form-control" id="contenidoComunicado" name="contenido" rows="9" required>{{ datos.contenido|default:'' }}</textarea>
+                {% if errores.contenido %}<small class="campo-error">{{ errores.contenido }}</small>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="adjuntoComunicado">Imagen o documento adjunto <small>(opcional, máximo 10 MB)</small></label>
+                {% if comunicado.adjunto %}
+                    <div class="comunicado-adjunto-actual">
+                        <a href="{% url 'descargar_adjunto_comunicado' comunicado.id %}"><i class="fas fa-paperclip"></i> {{ comunicado.adjunto.name|cut:"comunicados/" }}</a>
+                        <label><input type="checkbox" name="eliminar_adjunto" value="1" {% if datos.eliminar_adjunto %}checked{% endif %}> Quitar archivo</label>
+                    </div>
+                {% endif %}
+                <input class="form-control-file" type="file" id="adjuntoComunicado" name="adjunto" accept=".pdf,.jpg,.jpeg,.png,.webp">
+                <small class="comunicado-ayuda" id="nombreAdjunto">PDF, JPG, PNG o WEBP.</small>
+                {% if errores.adjunto %}<small class="campo-error">{{ errores.adjunto }}</small>{% endif %}
+            </div>
+        </div>
+    </section>
+
+    <aside class="crud-side">
+        <section class="crud-panel media-card">
+            <div class="crud-panel-header"><span class="section-icon"><i class="fas fa-bullhorn"></i></span><div><h2>Publicación</h2><p>Configura alcance y estado.</p></div></div>
+            <div class="crud-panel-body">
+                <div class="form-group">
+                    <label for="destinatarioComunicado">Destinatarios <b>*</b></label>
+                    <select class="form-control" id="destinatarioComunicado" name="destinatario" required>
+                        {% for valor, etiqueta in destinatarios %}<option value="{{ valor }}"{% if datos.destinatario == valor or not datos and valor == 'todos' %} selected{% endif %}>{{ etiqueta }}</option>{% endfor %}
+                    </select>
+                    {% if errores.destinatario %}<small class="campo-error">{{ errores.destinatario }}</small>{% endif %}
+                </div>
+                <div class="form-group" id="grupoBloque">
+                    <label for="bloqueComunicado">Bloque <b>*</b></label>
+                    <select class="form-control" id="bloqueComunicado" name="bloque">
+                        <option value="">Selecciona un bloque</option>
+                        {% for bloque in bloques %}<option value="{{ bloque.id }}"{% if datos.bloque_id == bloque.id|stringformat:"s" %} selected{% endif %}>{{ bloque.nombre }}{% if not bloque.habilitado %} (inhabilitado){% endif %}</option>{% endfor %}
+                    </select>
+                    {% if errores.bloque %}<small class="campo-error">{{ errores.bloque }}</small>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="prioridadComunicado">Prioridad</label>
+                    <select class="form-control" id="prioridadComunicado" name="prioridad">
+                        {% for valor, etiqueta in prioridades %}<option value="{{ valor }}"{% if datos.prioridad == valor or not datos and valor == 'normal' %} selected{% endif %}>{{ etiqueta }}</option>{% endfor %}
+                    </select>
+                    {% if errores.prioridad %}<small class="campo-error">{{ errores.prioridad }}</small>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="estadoComunicado">Estado</label>
+                    <select class="form-control" id="estadoComunicado" name="estado">
+                        {% for valor, etiqueta in estados %}<option value="{{ valor }}"{% if datos.estado == valor or not datos and valor == 'borrador' %} selected{% endif %}>{{ etiqueta }}</option>{% endfor %}
+                    </select>
+                    {% if errores.estado %}<small class="campo-error">{{ errores.estado }}</small>{% endif %}
+                </div>
+                <div class="crud-note"><i class="fas fa-info-circle"></i><div><strong>Visibilidad</strong><p>Los danzarines solo verán comunicados publicados y dirigidos a todos o a su bloque.</p></div></div>
+            </div>
+        </section>
+    </aside>
+
+    <footer class="crud-panel-footer">
+        <a class="btn btn-light" href="{% url 'listar_comunicados' %}">Cancelar</a>
+        <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> Guardar comunicado</button>
+    </footer>
+</form>
+{% endblock %}
+
+{% block scripts_extra %}<script src="{% static 'js/comunicados/crud/editar.js' %}"></script>{% endblock %}

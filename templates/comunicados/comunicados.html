@@ -1,0 +1,90 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block titulo %}Gestión de comunicados{% endblock %}
+
+{% block estilos_extra %}
+<link rel="stylesheet" href="{% static 'css/comunicados/comunicados.css' %}">
+{% endblock %}
+
+{% block contenido %}
+<header class="page-header">
+    <div>
+        <h1 class="page-title">Gestión de comunicados</h1>
+        <p class="page-subtitle">Publica avisos para todos los danzarines o para un bloque específico.</p>
+    </div>
+    <div class="page-acciones">
+        <a class="btn btn-primary btn-nuevo" href="{% url 'crear_comunicado' %}"><i class="fas fa-plus"></i> Nuevo comunicado</a>
+    </div>
+</header>
+
+<section class="stats-grid" aria-label="Resumen de comunicados">
+    <article class="stat-card">
+        <span class="stat-icon stat-total"><i class="fas fa-bullhorn"></i></span>
+        <div><div class="stat-value">{{ total_general }}</div><div class="stat-label">Comunicados registrados</div></div>
+    </article>
+    <article class="stat-card">
+        <span class="stat-icon stat-ok"><i class="fas fa-paper-plane"></i></span>
+        <div><div class="stat-value">{{ total_publicados }}</div><div class="stat-label">Publicados</div></div>
+    </article>
+    <article class="stat-card">
+        <span class="stat-icon stat-off"><i class="fas fa-file-alt"></i></span>
+        <div><div class="stat-value">{{ total_borradores }}</div><div class="stat-label">Borradores</div></div>
+    </article>
+</section>
+
+<section class="panel" aria-label="Listado de comunicados">
+    <form class="panel-toolbar" method="get" id="filtroComunicados">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="search" class="form-control" name="q" value="{{ q }}" placeholder="Buscar por título o contenido..." aria-label="Buscar comunicados">
+        </div>
+        <select class="form-control filtro-comunicado-estado" name="estado" aria-label="Filtrar por estado">
+            <option value="">Todos los estados</option>
+            {% for valor, etiqueta in estados %}<option value="{{ valor }}"{% if estado == valor %} selected{% endif %}>{{ etiqueta }}</option>{% endfor %}
+        </select>
+        <button class="btn btn-outline-primary" type="submit"><i class="fas fa-filter"></i> Filtrar</button>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table tabla-inicio">
+            <thead>
+                <tr><th>Comunicado</th><th>Destinatarios</th><th>Prioridad</th><th>Estado</th><th>Actualizado</th><th class="text-right">Acciones</th></tr>
+            </thead>
+            <tbody>
+            {% for comunicado in comunicados %}
+                <tr>
+                    <td>
+                        <a class="comunicado-titulo" href="{% url 'detalle_comunicado' comunicado.id %}">{{ comunicado.titulo }}</a>
+                        <span class="comunicado-resena">{{ comunicado.contenido|striptags|truncatechars:90 }}</span>
+                    </td>
+                    <td>{% if comunicado.destinatario == 'todos' %}Todos los danzarines{% else %}{{ comunicado.bloque.nombre|default:"Bloque eliminado" }}{% endif %}</td>
+                    <td><span class="comunicado-badge prioridad-{{ comunicado.prioridad }}">{{ comunicado.get_prioridad_display }}</span></td>
+                    <td><span class="comunicado-badge estado-{{ comunicado.estado }}">{{ comunicado.get_estado_display }}</span></td>
+                    <td>{{ comunicado.fecha_actualizacion|date:"d/m/Y H:i" }}</td>
+                    <td class="text-right acciones">
+                        <a class="btn-accion" href="{% url 'detalle_comunicado' comunicado.id %}" title="Ver" aria-label="Ver {{ comunicado.titulo }}"><i class="fas fa-eye"></i></a>
+                        <a class="btn-accion" href="{% url 'editar_comunicado' comunicado.id %}" title="Editar" aria-label="Editar {{ comunicado.titulo }}"><i class="fas fa-pen"></i></a>
+                        <a class="btn-accion peligro" href="{% url 'eliminar_comunicado' comunicado.id %}" title="Eliminar" aria-label="Eliminar {{ comunicado.titulo }}"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="6"><div class="empty-state"><i class="fas fa-bullhorn"></i><p>No hay comunicados para mostrar.</p></div></td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <footer class="panel-footer">
+        <span class="resumen">{% if paginator.count %}Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }} de {{ paginator.count }}{% else %}Mostrando 0 de 0{% endif %}</span>
+        {% if paginator.num_pages > 1 %}
+        <nav aria-label="Paginación de comunicados"><ul class="pagination pagination-sm mb-0">
+            {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&amp;q={{ q|urlencode }}&amp;estado={{ estado|urlencode }}">Anterior</a></li>{% endif %}
+            <li class="page-item active"><span class="page-link">{{ page_obj.number }} / {{ paginator.num_pages }}</span></li>
+            {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&amp;q={{ q|urlencode }}&amp;estado={{ estado|urlencode }}">Siguiente</a></li>{% endif %}
+        </ul></nav>
+        {% endif %}
+    </footer>
+</section>
+{% endblock %}
+
+{% block scripts_extra %}<script src="{% static 'js/comunicados/comunicados.js' %}"></script>{% endblock %}

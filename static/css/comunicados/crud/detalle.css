@@ -1,0 +1,46 @@
+@import url("../../presidentes/crud/detalle.css");
+
+.detalle-comunicado-datos {
+    margin: 0;
+}
+
+.detalle-comunicado-datos dt {
+    margin-top: 15px;
+    color: var(--mc-muted);
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.detalle-comunicado-datos dt:first-child {
+    margin-top: 0;
+}
+
+.detalle-comunicado-datos dd {
+    margin: 4px 0 0;
+    color: var(--mc-text);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.detalle-comunicado-adjunto {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 22px;
+    padding: 10px 14px;
+    border: 1px solid var(--mc-border);
+    border-radius: 9px;
+    color: var(--mc-primary);
+    font-weight: 700;
+}
+
+.detalle-comunicado-adjunto:hover {
+    background: #f3f7fc;
+    text-decoration: none;
+}
+
+.detalle-descripcion {
+    overflow-wrap: anywhere;
+}

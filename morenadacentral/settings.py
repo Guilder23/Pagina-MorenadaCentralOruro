@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "apps.cancionero.apps.CancioneroConfig",
     # App para administrar archivos descargables.
     "apps.descargas.apps.DescargasConfig",
+    "apps.comunicados.apps.ComunicadosConfig",
     "apps.directorio.apps.DirectorioConfig",
     "apps.reportes.apps.ReportesConfig",
 ]

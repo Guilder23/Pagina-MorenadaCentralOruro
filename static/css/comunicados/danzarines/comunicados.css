@@ -1,0 +1,144 @@
+.comunicados-personales-kicker {
+    margin: 0 0 5px;
+    color: var(--mc-primary);
+    font-size: .78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.comunicados-personales-lista {
+    display: grid;
+    max-width: 980px;
+    gap: 12px;
+}
+
+.comunicado-personal-card {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) 32px;
+    align-items: center;
+    gap: 14px;
+    padding: 17px;
+    border: 1px solid var(--mc-border);
+    border-radius: 13px;
+    background: var(--mc-surface);
+    box-shadow: var(--mc-shadow);
+}
+
+.comunicado-personal-importante {
+    border-left: 4px solid #e49b31;
+}
+
+.comunicado-personal-icono {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border-radius: 12px;
+    background: #eaf2fb;
+    color: var(--mc-primary);
+}
+
+.comunicado-personal-importante .comunicado-personal-icono {
+    background: #fff0dc;
+    color: #9d5700;
+}
+
+.comunicado-personal-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    color: var(--mc-muted);
+    font-size: .76rem;
+}
+
+.comunicado-personal-etiqueta {
+    color: #9d5700;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.comunicado-personal-texto h2 {
+    margin: 5px 0;
+    font-size: 1rem;
+}
+
+.comunicado-personal-texto h2 a {
+    color: var(--mc-primary);
+}
+
+.comunicado-personal-texto h2 a:hover {
+    text-decoration: underline;
+}
+
+.comunicado-personal-texto p {
+    margin: 0;
+    color: var(--mc-muted);
+    font-size: .88rem;
+    line-height: 1.55;
+}
+
+.comunicado-personal-adjunto {
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--mc-primary);
+    font-size: .78rem;
+}
+
+.comunicado-personal-abrir {
+    color: var(--mc-muted);
+    text-align: center;
+}
+
+.comunicados-personales-vacio {
+    padding: 48px 20px;
+    border: 1px dashed var(--mc-border);
+    border-radius: 14px;
+    background: var(--mc-surface);
+    text-align: center;
+}
+
+.comunicados-personales-vacio > span {
+    color: var(--mc-primary);
+    font-size: 1.8rem;
+}
+
+.comunicados-personales-vacio h2 {
+    margin: 10px 0 5px;
+    color: var(--mc-text);
+    font-size: 1.05rem;
+}
+
+.comunicados-personales-vacio p {
+    margin: 0;
+    color: var(--mc-muted);
+}
+
+.comunicados-personales-paginacion {
+    display: flex;
+    max-width: 980px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.comunicados-personales-paginacion > span {
+    color: var(--mc-muted);
+}
+
+@media (max-width: 560px) {
+    .comunicado-personal-card {
+        grid-template-columns: 36px minmax(0, 1fr);
+        gap: 10px;
+        padding: 13px;
+    }
+
+    .comunicado-personal-icono {
+        width: 36px;
+        height: 36px;
+    }
+
+    .comunicado-personal-abrir {
+        display: none;
+    }
+}

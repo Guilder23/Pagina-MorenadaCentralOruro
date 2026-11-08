@@ -1,0 +1,33 @@
+@import url("../../presidentes/crud/crear.css");
+
+.campo-error {
+    display: block;
+    margin-top: 5px;
+    color: var(--mc-danger);
+    font-size: .8rem;
+}
+
+.comunicado-ayuda {
+    display: block;
+    margin-top: 7px;
+    color: var(--mc-muted);
+    font-size: .78rem;
+}
+
+.comunicado-ayuda.error {
+    color: var(--mc-danger);
+}
+
+.comunicado-form-layout .crud-side {
+    grid-column: 2;
+}
+
+.comunicado-form-layout .crud-panel-footer {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 900px) {
+    .comunicado-form-layout .crud-side {
+        grid-column: 1;
+    }
+}

@@ -1,0 +1,29 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block titulo %}{{ comunicado.titulo }}{% endblock %}
+{% block estilos_extra %}<link rel="stylesheet" href="{% static 'css/comunicados/danzarines/detalle.css' %}">{% endblock %}
+
+{% block contenido %}
+<header class="detalle-comunicado-header">
+    <div>
+        <a class="crud-volver" href="{% url 'comunicados_danzarin' %}"><i class="fas fa-arrow-left"></i> Volver a Comunicados</a>
+        <p class="detalle-comunicado-kicker"><i class="fas fa-bullhorn"></i> Comunicado{% if comunicado.prioridad == 'importante' %} · Importante{% endif %}</p>
+        <h1 class="page-title">{{ comunicado.titulo }}</h1>
+        <p class="detalle-comunicado-meta">
+            {{ comunicado.fecha_publicacion|date:"d/m/Y · H:i" }}
+            · Para {% if comunicado.destinatario == 'todos' %}todos los danzarines{% else %}{{ comunicado.bloque.nombre }}{% endif %}
+        </p>
+    </div>
+</header>
+<article class="detalle-comunicado-card">
+    <div class="detalle-comunicado-contenido">{{ comunicado.contenido|linebreaksbr }}</div>
+    {% if comunicado.adjunto %}
+    <a class="detalle-comunicado-adjunto" href="{% url 'descargar_adjunto_comunicado' comunicado.id %}">
+        <i class="fas fa-paperclip"></i> Descargar archivo adjunto
+    </a>
+    {% endif %}
+</article>
+{% endblock %}
+
+{% block scripts_extra %}<script src="{% static 'js/comunicados/danzarines/detalle.js' %}"></script>{% endblock %}

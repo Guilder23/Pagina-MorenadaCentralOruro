@@ -1,0 +1,45 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block titulo %}Comunicados{% endblock %}
+
+{% block estilos_extra %}<link rel="stylesheet" href="{% static 'css/comunicados/danzarines/comunicados.css' %}">{% endblock %}
+
+{% block contenido %}
+<header class="page-header">
+    <div>
+        <p class="comunicados-personales-kicker"><i class="fas fa-bullhorn"></i> Avisos de la fraternidad</p>
+        <h1 class="page-title">Comunicados</h1>
+        <p class="page-subtitle">Información dirigida a todos los danzarines y a tu bloque.</p>
+    </div>
+</header>
+<section class="comunicados-personales-lista">
+    {% for comunicado in comunicados %}
+    <article class="comunicado-personal-card{% if comunicado.prioridad == 'importante' %} comunicado-personal-importante{% endif %}">
+        <div class="comunicado-personal-icono"><i class="fas {% if comunicado.prioridad == 'importante' %}fa-exclamation{% else %}fa-bullhorn{% endif %}"></i></div>
+        <div class="comunicado-personal-texto">
+            <div class="comunicado-personal-meta">
+                {% if comunicado.prioridad == 'importante' %}<span class="comunicado-personal-etiqueta">Importante</span>{% endif %}
+                <span>{{ comunicado.fecha_publicacion|date:"d/m/Y · H:i" }}</span>
+                <span>{% if comunicado.destinatario == 'todos' %}Todos los danzarines{% else %}{{ comunicado.bloque.nombre }}{% endif %}</span>
+            </div>
+            <h2><a href="{% url 'detalle_comunicado_danzarin' comunicado.id %}">{{ comunicado.titulo }}</a></h2>
+            <p>{{ comunicado.contenido|striptags|truncatechars:180 }}</p>
+            {% if comunicado.adjunto %}<span class="comunicado-personal-adjunto"><i class="fas fa-paperclip"></i> Incluye archivo adjunto</span>{% endif %}
+        </div>
+        <a class="comunicado-personal-abrir" href="{% url 'detalle_comunicado_danzarin' comunicado.id %}" aria-label="Leer {{ comunicado.titulo }}"><i class="fas fa-chevron-right"></i></a>
+    </article>
+    {% empty %}
+    <div class="comunicados-personales-vacio"><span><i class="fas fa-inbox"></i></span><h2>No hay comunicados publicados</h2><p>Cuando se publique un aviso dirigido a ti, aparecerá aquí.</p></div>
+    {% endfor %}
+</section>
+{% if paginator.num_pages > 1 %}
+<nav class="comunicados-personales-paginacion" aria-label="Paginación">
+    {% if page_obj.has_previous %}<a class="btn btn-outline-primary" href="?page={{ page_obj.previous_page_number }}"><i class="fas fa-chevron-left"></i> Anterior</a>{% endif %}
+    <span>{{ page_obj.number }} / {{ paginator.num_pages }}</span>
+    {% if page_obj.has_next %}<a class="btn btn-outline-primary" href="?page={{ page_obj.next_page_number }}">Siguiente <i class="fas fa-chevron-right"></i></a>{% endif %}
+</nav>
+{% endif %}
+{% endblock %}
+
+{% block scripts_extra %}<script src="{% static 'js/comunicados/danzarines/comunicados.js' %}"></script>{% endblock %}

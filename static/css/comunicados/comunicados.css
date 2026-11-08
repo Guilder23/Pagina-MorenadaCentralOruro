@@ -1,0 +1,58 @@
+@import url("../presidentes/presidentes.css");
+
+.comunicado-titulo {
+    display: block;
+    color: var(--mc-primary);
+    font-weight: 700;
+}
+
+.comunicado-titulo:hover {
+    text-decoration: underline;
+}
+
+.comunicado-resena {
+    display: block;
+    max-width: 430px;
+    margin-top: 3px;
+    color: var(--mc-muted);
+}
+
+.comunicado-badge {
+    display: inline-flex;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: .75rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.prioridad-normal,
+.estado-borrador {
+    background: #edf1f5;
+    color: #536273;
+}
+
+.prioridad-importante {
+    background: #fff0dc;
+    color: #9d5700;
+}
+
+.estado-publicado {
+    background: #e5f6ed;
+    color: #147344;
+}
+
+.estado-archivado {
+    background: #f0eafa;
+    color: #6741a5;
+}
+
+.filtro-comunicado-estado {
+    flex: 0 1 210px;
+}
+
+@media (max-width: 700px) {
+    .filtro-comunicado-estado {
+        flex: 1 1 180px;
+    }
+}

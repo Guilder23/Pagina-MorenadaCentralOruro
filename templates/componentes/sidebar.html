@@ -5,6 +5,9 @@
         <a class="sidebar-link {% if request.resolver_match.url_name in 'perfil_danzarin cambiar_credenciales_danzarin' %}active{% endif %}" href="{% url 'perfil_danzarin' %}" title="Mi perfil">
             <i class="fas fa-user-circle"></i><span>Mi perfil</span>
         </a>
+        <a class="sidebar-link {% if request.resolver_match.url_name in 'comunicados_danzarin detalle_comunicado_danzarin' %}active{% endif %}" href="{% url 'comunicados_danzarin' %}" title="Comunicados">
+            <i class="fas fa-bullhorn"></i><span>Comunicados</span>
+        </a>
     </nav>
     {% else %}
     <nav class="sidebar-nav">
@@ -32,6 +35,9 @@
         {# Acceso a todas las pantallas de administración de descargas. #}
         <a class="sidebar-link {% if request.resolver_match.url_name in 'listar_descargas crear_descarga detalle_descarga editar_descarga eliminar_descarga' %}active{% endif %}" href="{% url 'listar_descargas' %}" title="Descargas">
             <i class="fas fa-download"></i><span>Descargas</span>
+        </a>
+        <a class="sidebar-link {% if request.resolver_match.url_name in 'listar_comunicados crear_comunicado detalle_comunicado editar_comunicado eliminar_comunicado' %}active{% endif %}" href="{% url 'listar_comunicados' %}" title="Comunicados">
+            <i class="fas fa-bullhorn"></i><span>Comunicados</span>
         </a>
         <a class="sidebar-link {% if request.resolver_match.url_name in 'listar_directorio crear_directorio detalle_directorio editar_directorio eliminar_directorio subir_imagen_directorio' %}active{% endif %}" href="{% url 'listar_directorio' %}" title="Directorio">
             <i class="fas fa-address-book"></i><span>Directorio</span>
