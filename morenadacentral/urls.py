@@ -14,6 +14,8 @@ urlpatterns = [
     path("", include("apps.inicio.urls")),
     path("", include("apps.historia.urls")),
     path("", include("apps.presidentes.urls")),
+    # Incorpora las rutas del CRUD de personajes al sitio.
+    path("", include("apps.personajes.urls")),
     path("", include("apps.directorio.urls")),
     path("", include("apps.reportes.urls")),
 ]

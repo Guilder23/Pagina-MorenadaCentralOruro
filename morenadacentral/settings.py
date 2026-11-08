@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     "apps.inicio.apps.InicioConfig",
     "apps.historia.apps.HistoriaConfig",
     "apps.presidentes.apps.PresidentesConfig",
+    # App para administrar personajes de la danza.
+    "apps.personajes.apps.PersonajesConfig",
     "apps.directorio.apps.DirectorioConfig",
     "apps.reportes.apps.ReportesConfig",
 ]

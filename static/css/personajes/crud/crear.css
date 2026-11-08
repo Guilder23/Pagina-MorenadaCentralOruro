@@ -1,0 +1,8 @@
+@import url("../../inicio/crud/crear.css");
+
+/* Facilita la escritura y lectura de la historia en el formulario. */
+.historia-textarea {
+    min-height: 260px;
+    resize: vertical;
+    line-height: 1.65;
+}

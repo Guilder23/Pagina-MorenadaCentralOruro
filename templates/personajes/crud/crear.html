@@ -1,0 +1,77 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Nuevo personaje{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/personajes/crud/crear.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    {# Encabezado y enlace para volver al listado. #}
+    <header class="crud-header">
+        <div>
+            <a class="crud-volver" href="{% url 'listar_personajes' %}">
+                <i class="fas fa-arrow-left"></i> Volver a Personajes
+            </a>
+            <div class="crud-kicker"><i class="fas fa-theater-masks"></i> Gestión de personajes</div>
+            <h1 class="page-title">Nuevo personaje</h1>
+            <p class="page-subtitle">Registra la historia de un personaje de la danza.</p>
+        </div>
+    </header>
+
+    {# Formulario de alta con datos principales y fotografía opcional. #}
+    <form class="crud-layout" method="post" enctype="multipart/form-data" id="formPersonaje">
+        {% csrf_token %}
+        {# Nombre e historia que definen al personaje. #}
+        <section class="crud-panel crud-main-card">
+            <div class="crud-panel-header">
+                <span class="section-icon"><i class="fas fa-edit"></i></span>
+                <div>
+                    <h2>Información principal</h2>
+                    <p>Completa el nombre y la historia del personaje.</p>
+                </div>
+            </div>
+            <div class="crud-panel-body">
+                <div class="form-group">
+                    <label for="nombrePersonaje">Nombre <span>*</span></label>
+                    <input class="form-control" id="nombrePersonaje" name="nombre" maxlength="150" value="{{ datos.nombre|default:'' }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="historiaPersonaje">Historia <span>*</span></label>
+                    <textarea class="form-control historia-textarea" id="historiaPersonaje" name="historia" rows="12" required>{{ datos.historia|default:'' }}</textarea>
+                </div>
+            </div>
+        </section>
+
+        {# Carga opcional de foto con espacio para la previsualización. #}
+        <aside class="crud-side">
+            <section class="crud-panel media-card">
+                <div class="crud-panel-header">
+                    <span class="section-icon"><i class="fas fa-image"></i></span>
+                    <div><h2>Fotografía</h2><p>Opcional</p></div>
+                </div>
+                <div class="crud-panel-body">
+                    <label for="fotoPersonaje">Imagen del personaje</label>
+                    <div class="upload-box">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <strong>Selecciona una imagen</strong>
+                        <span>JPG, PNG o WEBP · Máximo 5 MB</span>
+                        <input type="file" id="fotoPersonaje" name="foto" accept="image/*">
+                    </div>
+                    <img id="fotoPersonajePreview" class="upload-preview" alt="Vista previa de la fotografía">
+                </div>
+            </section>
+        </aside>
+
+        {# Acciones para cancelar o guardar el nuevo registro. #}
+        <footer class="crud-panel-footer">
+            <a class="btn btn-light" href="{% url 'listar_personajes' %}">Cancelar</a>
+            <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> Guardar personaje</button>
+        </footer>
+    </form>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/personajes/crud/crear.js' %}"></script>
+{% endblock %}

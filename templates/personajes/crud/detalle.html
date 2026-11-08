@@ -1,0 +1,78 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Detalle de personaje{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/personajes/crud/detalle.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    {# Identificación del personaje y acceso directo a edición. #}
+    <header class="crud-header">
+        <div>
+            <a class="crud-volver" href="{% url 'listar_personajes' %}">
+                <i class="fas fa-arrow-left"></i> Volver a Personajes
+            </a>
+            <div class="crud-kicker"><i class="fas fa-theater-masks"></i> Gestión de personajes</div>
+            <h1 class="page-title">Detalle del personaje</h1>
+            <p class="page-subtitle">Consulta la historia de este personaje.</p>
+        </div>
+        <a class="btn btn-primary" href="{% url 'editar_personaje' personaje.id %}">
+            <i class="fas fa-pen"></i> Editar
+        </a>
+    </header>
+
+    {# Historia completa y fotografía del personaje. #}
+    <div class="crud-layout">
+        {# Sección de nombre e historia. #}
+        <article class="crud-panel detalle-panel">
+            <div class="crud-panel-header">
+                <span class="section-icon"><i class="fas fa-eye"></i></span>
+                <div><h2>Historia</h2><p>Personaje registrado.</p></div>
+            </div>
+            <div class="crud-panel-body">
+                <div class="detalle-titulo">
+                    <span class="detalle-etiqueta">Personaje</span>
+                    <h2>{{ personaje.nombre }}</h2>
+                </div>
+                <div class="detalle-descripcion">{{ personaje.historia|linebreaksbr }}</div>
+            </div>
+        </article>
+
+        {# Fotografía o indicador cuando no se ha cargado una. #}
+        <aside class="crud-side">
+            <section class="crud-panel media-card">
+                <div class="crud-panel-header">
+                    <span class="section-icon"><i class="fas fa-image"></i></span>
+                    <div>
+                        <h2>Fotografía</h2>
+                        <p>{% if personaje.foto %}Fotografía publicada{% else %}Sin fotografía{% endif %}</p>
+                    </div>
+                </div>
+                <div class="crud-panel-body">
+                    {% if personaje.foto %}
+                        <img class="detalle-foto" src="{{ personaje.foto.url }}" alt="{{ personaje.nombre }}">
+                    {% else %}
+                        <div class="detalle-sin-foto">
+                            <i class="fas fa-theater-masks"></i>
+                            <span>No se agregó una fotografía.</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </section>
+        </aside>
+
+        {# Navegación para volver al listado o editar el registro. #}
+        <footer class="crud-panel-footer">
+            <a class="btn btn-light" href="{% url 'listar_personajes' %}">Volver</a>
+            <a class="btn btn-primary" href="{% url 'editar_personaje' personaje.id %}">
+                <i class="fas fa-pen"></i> Editar personaje
+            </a>
+        </footer>
+    </div>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/personajes/crud/detalle.js' %}"></script>
+{% endblock %}

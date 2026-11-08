@@ -1,0 +1,43 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Eliminar personaje{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/personajes/crud/eliminar.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    {# Contexto de la acción y enlace de regreso al listado. #}
+    <header class="crud-header">
+        <div>
+            <a class="crud-volver" href="{% url 'listar_personajes' %}">
+                <i class="fas fa-arrow-left"></i> Volver a Personajes
+            </a>
+            <div class="crud-kicker danger"><i class="fas fa-shield-alt"></i> Acción permanente</div>
+            <h1 class="page-title">Eliminar personaje</h1>
+            <p class="page-subtitle">Revisa la información antes de confirmar.</p>
+        </div>
+    </header>
+
+    {# Confirmación explícita antes de eliminar permanentemente. #}
+    <form class="confirmar-panel" method="post" id="formEliminarPersonaje">
+        {% csrf_token %}
+        <div class="confirmar-icono"><i class="fas fa-trash"></i></div>
+        <span class="confirmar-badge">Confirmación requerida</span>
+        <h2>¿Eliminar este registro?</h2>
+        <div class="confirmar-registro">
+            <i class="fas fa-theater-masks"></i>
+            <strong>{{ personaje.nombre }}</strong>
+        </div>
+        <p>Esta acción eliminará permanentemente el registro y no se puede deshacer.</p>
+        <div class="confirmar-acciones">
+            <a class="btn btn-light" href="{% url 'listar_personajes' %}">Cancelar</a>
+            <button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i> Sí, eliminar</button>
+        </div>
+    </form>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/personajes/crud/eliminar.js' %}"></script>
+{% endblock %}

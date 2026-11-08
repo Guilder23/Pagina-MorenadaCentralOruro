@@ -1,0 +1,160 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Personajes{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/personajes/personajes.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    {# Encabezado y acceso al formulario de creación. #}
+    <section class="page-header">
+        <div>
+            <h1 class="page-title">Gestión de personajes</h1>
+            <p class="page-subtitle">Administra la historia de los personajes de la danza.</p>
+        </div>
+        <div class="page-acciones">
+            <a class="btn btn-primary btn-nuevo" href="{% url 'crear_personaje' %}">
+                <i class="fas fa-plus"></i>
+                Nuevo personaje
+            </a>
+        </div>
+    </section>
+
+    {# Resumen de registros según disponibilidad de fotografía. #}
+    <section class="stats-grid" aria-label="Resumen de personajes">
+        <article class="stat-card">
+            <span class="stat-icon stat-total"><i class="fas fa-theater-masks"></i></span>
+            <div>
+                <div class="stat-value">{{ total_general }}</div>
+                <div class="stat-label">Personajes registrados</div>
+            </div>
+        </article>
+        <article class="stat-card">
+            <span class="stat-icon stat-ok"><i class="fas fa-image"></i></span>
+            <div>
+                <div class="stat-value">{{ total_con_foto }}</div>
+                <div class="stat-label">Con fotografía</div>
+            </div>
+        </article>
+        <article class="stat-card">
+            <span class="stat-icon stat-off"><i class="fas fa-file-alt"></i></span>
+            <div>
+                <div class="stat-value">{{ total_sin_foto }}</div>
+                <div class="stat-label">Sin fotografía</div>
+            </div>
+        </article>
+    </section>
+
+    {# Búsqueda, tabla de resultados y navegación entre páginas. #}
+    <section class="panel" aria-label="Listado de personajes">
+        <div class="panel-toolbar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input
+                    type="search"
+                    class="form-control"
+                    id="buscarPersonajes"
+                    placeholder="Buscar por nombre o historia..."
+                    value="{{ q }}"
+                    aria-label="Buscar personajes"
+                >
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table tabla-inicio">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Foto</th>
+                        <th>Nombre</th>
+                        <th>Historia</th>
+                        <th class="text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for personaje in personajes %}
+                        <tr>
+                            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                            {# Miniatura previa al nombre, igual que en presidentes. #}
+                            <td>
+                                {% if personaje.foto %}
+                                    <img class="inicio-miniatura" src="{{ personaje.foto.url }}" alt="{{ personaje.nombre }}">
+                                {% else %}
+                                    <span class="inicio-sin-foto" aria-label="Sin fotografía">
+                                        <i class="fas fa-theater-masks"></i>
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="fw-600">{{ personaje.nombre }}</td>
+                            {# La historia se recorta para conservar filas compactas. #}
+                            <td class="descripcion-corta">{{ personaje.historia|striptags|truncatechars:100 }}</td>
+                            {# Acciones visibles según los permisos del usuario. #}
+                            <td class="text-right acciones">
+                                <a class="btn-accion" href="{% url 'detalle_personaje' personaje.id %}" title="Ver" aria-label="Ver a {{ personaje.nombre }}">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a class="btn-accion" href="{% url 'editar_personaje' personaje.id %}" title="Editar" aria-label="Editar a {{ personaje.nombre }}">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+                                {% if user.is_superuser or user.perfil.rol == 'administrador' %}
+                                    <a class="btn-accion peligro" href="{% url 'eliminar_personaje' personaje.id %}" title="Eliminar" aria-label="Eliminar a {{ personaje.nombre }}">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <i class="fas fa-theater-masks"></i>
+                                    <p>No se encontraron personajes.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <footer class="panel-footer">
+            <span class="resumen">
+                {% if paginator.count %}
+                    Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }} de {{ paginator.count }}
+                {% else %}
+                    Mostrando 0 de 0
+                {% endif %}
+            </span>
+            {% if paginator.num_pages > 1 %}
+                <nav aria-label="Paginación de personajes">
+                    <ul class="pagination pagination-sm mb-0">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&amp;q={{ q|urlencode }}" aria-label="Página anterior">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_obj.number }} / {{ paginator.num_pages }}</span>
+                        </li>
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}&amp;q={{ q|urlencode }}" aria-label="Página siguiente">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </footer>
+    </section>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/personajes/personajes.js' %}"></script>
+{% endblock %}

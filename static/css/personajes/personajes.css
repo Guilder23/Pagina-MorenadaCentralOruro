@@ -1,0 +1,45 @@
+@import url("../presidentes/presidentes.css");
+
+/* Ancho del campo de búsqueda del listado. */
+.panel .search-box {
+    max-width: 520px;
+}
+
+/* Alineación vertical y presentación compacta de las historias. */
+.tabla-inicio td {
+    vertical-align: middle;
+}
+
+/* Mantiene la historia legible sin ampliar demasiado la tabla. */
+.descripcion-corta {
+    max-width: 420px;
+    white-space: normal;
+    line-height: 1.55;
+}
+
+/* Distribución estable de columnas en el listado. */
+.panel .tabla-inicio {
+    table-layout: fixed;
+    width: 100%;
+}
+
+/* Anchos de las columnas de número, foto, nombre y acciones. */
+.panel .tabla-inicio th:nth-child(1),
+.panel .tabla-inicio td:nth-child(1) {
+    width: 6%;
+}
+
+.panel .tabla-inicio th:nth-child(2),
+.panel .tabla-inicio td:nth-child(2) {
+    width: 12%;
+}
+
+.panel .tabla-inicio th:nth-child(3),
+.panel .tabla-inicio td:nth-child(3) {
+    width: 18%;
+}
+
+.panel .tabla-inicio th:nth-child(5),
+.panel .tabla-inicio td:nth-child(5) {
+    width: 20%;
+}
