@@ -1,0 +1,83 @@
+@import url("../presidentes/presidentes.css");
+
+/* Ajusta el campo de búsqueda y filtro del listado. */
+.panel .search-box {
+    max-width: 520px;
+}
+
+.filtro-categoria {
+    flex: 0 0 220px;
+}
+
+/* Mantiene filas alineadas y letras breves en la tabla. */
+.tabla-inicio td {
+    vertical-align: middle;
+}
+
+.letra-corta {
+    max-width: 380px;
+    overflow: hidden;
+    white-space: normal;
+    line-height: 1.5;
+}
+
+/* Mantiene compacta la tabla y deja espacio a título y acciones. */
+.panel .tabla-inicio {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.panel .tabla-inicio th:nth-child(1),
+.panel .tabla-inicio td:nth-child(1) {
+    width: 6%;
+}
+
+.panel .tabla-inicio th:nth-child(2),
+.panel .tabla-inicio td:nth-child(2) {
+    width: 18%;
+}
+
+.panel .tabla-inicio th:nth-child(3),
+.panel .tabla-inicio td:nth-child(3) {
+    width: 13%;
+}
+
+.panel .tabla-inicio th:nth-child(5),
+.panel .tabla-inicio td:nth-child(5) {
+    width: 12%;
+}
+
+.panel .tabla-inicio th:nth-child(6),
+.panel .tabla-inicio td:nth-child(6) {
+    width: 12%;
+}
+
+.panel .tabla-inicio th:nth-child(7),
+.panel .tabla-inicio td:nth-child(7) {
+    width: 20%;
+}
+
+/* Distingue visualmente el estado de cada canción. */
+.badge-estado {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: .68rem;
+    font-weight: 800;
+}
+
+.badge-estado.habilitada {
+    background: var(--mc-success-bg);
+    color: var(--mc-success);
+}
+
+.badge-estado.inhabilitada {
+    background: var(--mc-danger-bg);
+    color: var(--mc-danger);
+}
+
+.audio-disponible {
+    color: var(--mc-primary);
+    font-size: .8rem;
+    white-space: nowrap;
+}

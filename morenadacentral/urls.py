@@ -18,6 +18,8 @@ urlpatterns = [
     path("", include("apps.personajes.urls")),
     # Incorpora las rutas del CRUD de conjuntos afiliados.
     path("", include("apps.conjuntos.urls")),
+    # Incorpora las rutas del CRUD del cancionero.
+    path("", include("apps.cancionero.urls")),
     path("", include("apps.directorio.urls")),
     path("", include("apps.reportes.urls")),
 ]

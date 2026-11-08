@@ -1,0 +1,96 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Detalle de canción{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/cancionero/crud/detalle.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    {# Identificación de la canción y acceso directo a edición. #}
+    <header class="crud-header">
+        <div>
+            <a class="crud-volver" href="{% url 'listar_canciones' %}">
+                <i class="fas fa-arrow-left"></i> Volver al Cancionero
+            </a>
+            <div class="crud-kicker"><i class="fas fa-music"></i> Gestión del cancionero</div>
+            <h1 class="page-title">Detalle de la canción</h1>
+            <p class="page-subtitle">Consulta la letra y los datos registrados.</p>
+        </div>
+        <a class="btn btn-primary" href="{% url 'editar_cancion' cancion.id %}">
+            <i class="fas fa-pen"></i> Editar
+        </a>
+    </header>
+
+    {# Letra y metadatos junto a la reproducción del audio. #}
+    <div class="crud-layout">
+        <article class="crud-panel detalle-panel">
+            <div class="crud-panel-header">
+                <span class="section-icon"><i class="fas fa-align-left"></i></span>
+                <div><h2>Letra</h2><p>{{ cancion.get_categoria_display }} · Orden {{ cancion.orden }}</p></div>
+            </div>
+            <div class="crud-panel-body">
+                <div class="detalle-titulo">
+                    <span class="detalle-etiqueta">{{ cancion.estado_texto }}</span>
+                    <h2>{{ cancion.titulo }}</h2>
+                </div>
+                {% if cancion.autor or cancion.anio %}
+                    <p class="cancion-metadatos">
+                        {% if cancion.autor %}<strong>Autor:</strong> {{ cancion.autor }}{% endif %}
+                        {% if cancion.autor and cancion.anio %} · {% endif %}
+                        {% if cancion.anio %}<strong>Año:</strong> {{ cancion.anio }}{% endif %}
+                    </p>
+                {% endif %}
+                <div class="detalle-descripcion letra-completa">{{ letra_html|safe }}</div>
+                {% if cancion.observaciones %}
+                    <section class="observaciones-cancion">
+                        <h3>Observaciones</h3>
+                        <p>{{ cancion.observaciones|linebreaksbr }}</p>
+                    </section>
+                {% endif %}
+            </div>
+        </article>
+
+        {# Reproductor de archivo o enlace externo cuando está disponible. #}
+        <aside class="crud-side">
+            <section class="crud-panel media-card">
+                <div class="crud-panel-header">
+                    <span class="section-icon"><i class="fas fa-volume-up"></i></span>
+                    <div><h2>Audio</h2><p>Reproducción de la canción</p></div>
+                </div>
+                <div class="crud-panel-body">
+                    {% if cancion.audio %}
+                        <audio class="audio-reproductor" src="{{ cancion.audio.url }}" controls preload="none">
+                            Tu navegador no admite la reproducción de audio.
+                        </audio>
+                    {% elif cancion.audio_url %}
+                        <audio class="audio-reproductor" src="{{ cancion.audio_url }}" controls preload="none">
+                            Tu navegador no admite la reproducción de audio.
+                        </audio>
+                        <a class="audio-enlace-detalle" href="{{ cancion.audio_url }}" target="_blank" rel="noopener noreferrer">
+                            Abrir enlace de audio
+                        </a>
+                    {% else %}
+                        <div class="detalle-sin-foto">
+                            <i class="fas fa-volume-mute"></i>
+                            <span>No se agregó un audio.</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </section>
+        </aside>
+
+        {# Navegación para volver o editar la canción. #}
+        <footer class="crud-panel-footer">
+            <a class="btn btn-light" href="{% url 'listar_canciones' %}">Volver</a>
+            <a class="btn btn-primary" href="{% url 'editar_cancion' cancion.id %}">
+                <i class="fas fa-pen"></i> Editar canción
+            </a>
+        </footer>
+    </div>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/cancionero/crud/detalle.js' %}"></script>
+{% endblock %}

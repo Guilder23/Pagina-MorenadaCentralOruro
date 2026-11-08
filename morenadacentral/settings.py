@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     "apps.personajes.apps.PersonajesConfig",
     # App para administrar conjuntos afiliados.
     "apps.conjuntos.apps.ConjuntosConfig",
+    # App para administrar el cancionero.
+    "apps.cancionero.apps.CancioneroConfig",
     "apps.directorio.apps.DirectorioConfig",
     "apps.reportes.apps.ReportesConfig",
 ]

@@ -1,0 +1,121 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Nueva canción{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/cancionero/crud/crear.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cancionero/crud/_editor.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    {# Encabezado y navegación de regreso al listado. #}
+    <header class="crud-header">
+        <div>
+            <a class="crud-volver" href="{% url 'listar_canciones' %}">
+                <i class="fas fa-arrow-left"></i> Volver al Cancionero
+            </a>
+            <div class="crud-kicker"><i class="fas fa-music"></i> Gestión del cancionero</div>
+            <h1 class="page-title">Nueva canción</h1>
+            <p class="page-subtitle">Registra la letra y los datos de la canción.</p>
+        </div>
+    </header>
+
+    {# Formulario de alta con datos, audio y estado de publicación. #}
+    <form class="crud-layout" method="post" enctype="multipart/form-data" id="formCancion" data-upload-url="{% url 'subir_imagen_letra_cancion' %}">
+        {% csrf_token %}
+        <section class="crud-panel crud-main-card">
+            <div class="crud-panel-header">
+                <span class="section-icon"><i class="fas fa-edit"></i></span>
+                <div><h2>Información de la canción</h2><p>Completa los datos principales y la letra.</p></div>
+            </div>
+            <div class="crud-panel-body">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="ordenCancion">Orden <span>*</span></label>
+                        <input class="form-control" type="number" id="ordenCancion" name="orden" min="1" value="{{ datos.orden|default:'1' }}" required>
+                    </div>
+                    <div class="form-group col-md-9">
+                        <label for="tituloCancion">Título <span>*</span></label>
+                        <input class="form-control" id="tituloCancion" name="titulo" maxlength="200" value="{{ datos.titulo|default:'' }}" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="categoriaCancion">Categoría <span>*</span></label>
+                        <select class="form-control" id="categoriaCancion" name="categoria" required>
+                            <option value="">Selecciona una categoría</option>
+                            {% for valor, etiqueta in categorias %}
+                                <option value="{{ valor }}" {% if datos.categoria == valor %}selected{% endif %}>{{ etiqueta }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="autorCancion">Autor o compositor</label>
+                        <input class="form-control" id="autorCancion" name="autor" maxlength="150" value="{{ datos.autor|default:'' }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="letraCancion">Letra <span>*</span></label>
+                    {% include "cancionero/crud/_editor.html" with editor_value=editor_value|default:'' %}
+                </div>
+                <div class="form-group">
+                    <label for="observacionesCancion">Observaciones</label>
+                    <textarea class="form-control" id="observacionesCancion" name="observaciones" rows="3">{{ datos.observaciones|default:'' }}</textarea>
+                </div>
+            </div>
+        </section>
+
+        {# Datos adicionales y carga o enlace de audio. #}
+        <aside class="crud-side">
+            <section class="crud-panel">
+                <div class="crud-panel-header">
+                    <span class="section-icon"><i class="fas fa-sliders-h"></i></span>
+                    <div><h2>Datos adicionales</h2><p>Año y estado del registro.</p></div>
+                </div>
+                <div class="crud-panel-body">
+                    <div class="form-group">
+                        <label for="anioCancion">Año</label>
+                        <input class="form-control" type="number" id="anioCancion" name="anio" min="1" max="9999" value="{{ datos.anio|default:'' }}">
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="habilitadaCancion" name="habilitada" {% if datos.habilitada or not datos %}checked{% endif %}>
+                        <label class="form-check-label" for="habilitadaCancion">Canción activa</label>
+                    </div>
+                </div>
+            </section>
+
+            <section class="crud-panel media-card">
+                <div class="crud-panel-header">
+                    <span class="section-icon"><i class="fas fa-volume-up"></i></span>
+                    <div><h2>Audio</h2><p>Opcional</p></div>
+                </div>
+                <div class="crud-panel-body">
+                    <label for="audioCancion">Archivo de audio</label>
+                    <div class="upload-box">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <strong>Selecciona un audio</strong>
+                        <span>MP3, WAV u OGG · Máximo 20 MB</span>
+                        <input type="file" id="audioCancion" name="audio" accept="audio/*">
+                    </div>
+                    <audio id="audioCancionPreview" class="audio-preview" controls hidden></audio>
+                    <div class="form-group audio-enlace">
+                        <label for="audioUrlCancion">O pega un enlace de audio</label>
+                        <input class="form-control" type="url" id="audioUrlCancion" name="audio_url" maxlength="500" placeholder="https://ejemplo.com/cancion.mp3" value="{{ datos.audio_url|default:'' }}">
+                    </div>
+                </div>
+            </section>
+        </aside>
+
+        {# Acciones para cancelar o crear la canción. #}
+        <footer class="crud-panel-footer">
+            <a class="btn btn-light" href="{% url 'listar_canciones' %}">Cancelar</a>
+            <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> Guardar canción</button>
+        </footer>
+    </form>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/cancionero/crud/_editor.js' %}"></script>
+    <script src="{% static 'js/cancionero/crud/crear.js' %}"></script>
+{% endblock %}

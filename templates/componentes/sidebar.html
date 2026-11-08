@@ -18,6 +18,10 @@
         <a class="sidebar-link {% if request.resolver_match.url_name in 'listar_conjuntos crear_conjunto detalle_conjunto editar_conjunto eliminar_conjunto' %}active{% endif %}" href="{% url 'listar_conjuntos' %}" title="Conjuntos">
             <i class="fas fa-users"></i><span>Conjuntos</span>
         </a>
+        {# Acceso a todas las pantallas de administración del cancionero. #}
+        <a class="sidebar-link {% if request.resolver_match.url_name in 'listar_canciones crear_cancion detalle_cancion editar_cancion eliminar_cancion' %}active{% endif %}" href="{% url 'listar_canciones' %}" title="Cancionero">
+            <i class="fas fa-music"></i><span>Cancionero</span>
+        </a>
         <a class="sidebar-link {% if request.resolver_match.url_name in 'listar_directorio crear_directorio detalle_directorio editar_directorio eliminar_directorio subir_imagen_directorio' %}active{% endif %}" href="{% url 'listar_directorio' %}" title="Directorio">
             <i class="fas fa-address-book"></i><span>Directorio</span>
         </a>

@@ -1,0 +1,39 @@
+{# Barra de herramientas con las mismas opciones del editor de Historia. #}
+<div class="editor-enriquecido">
+    <div class="editor-barra" role="toolbar" aria-label="Formato de letra">
+        <button type="button" class="editor-boton" data-command="bold" aria-label="Negrita" title="Negrita">
+            <i class="fas fa-bold"></i>
+        </button>
+        <button type="button" class="editor-boton" data-command="italic" aria-label="Cursiva" title="Cursiva">
+            <i class="fas fa-italic"></i>
+        </button>
+        <button type="button" class="editor-boton" data-command="createLink" aria-label="Insertar enlace" title="Insertar enlace">
+            <i class="fas fa-link"></i>
+        </button>
+        <button type="button" class="editor-boton" data-command="insertUnorderedList" aria-label="Lista sin ordenar" title="Lista sin ordenar">
+            <i class="fas fa-list-ul"></i>
+        </button>
+        <button type="button" class="editor-boton" data-command="insertOrderedList" aria-label="Lista ordenada" title="Lista ordenada">
+            <i class="fas fa-list-ol"></i>
+        </button>
+        <button type="button" class="editor-boton editor-imagen" aria-label="Insertar imagen" title="Insertar imagen">
+            <i class="fas fa-image"></i>
+        </button>
+        <select class="editor-formato" aria-label="Formato de párrafo">
+            <option value="p">Párrafo</option>
+            <option value="h2">Título</option>
+            <option value="h3">Subtítulo</option>
+            <option value="blockquote">Cita</option>
+        </select>
+        <input type="file" class="editor-archivo-imagen" accept="image/*" hidden>
+    </div>
+    <div
+        class="editor-area"
+        contenteditable="true"
+        data-placeholder="Escribe la letra de la canción..."
+        role="textbox"
+        aria-multiline="true"
+        aria-label="Letra de la canción"
+    >{{ editor_value|safe }}</div>
+    <textarea name="letra" class="editor-valor" hidden></textarea>
+</div>

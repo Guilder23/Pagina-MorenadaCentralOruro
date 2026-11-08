@@ -1,0 +1,29 @@
+@import url("../../inicio/crud/crear.css");
+
+/* Deja suficiente espacio para escribir versos largos en el editor. */
+.editor-area {
+    min-height: 320px;
+    resize: vertical;
+    line-height: 1.7;
+}
+
+/* Separa el campo de enlace del selector de archivo de audio. */
+.audio-enlace {
+    margin: 20px 0 0;
+}
+
+.audio-preview {
+    display: block;
+    width: 100%;
+    margin-top: 14px;
+}
+
+.audio-preview[hidden] {
+    display: none;
+}
+
+.audio-actual {
+    margin: 12px 0 0;
+    overflow-wrap: anywhere;
+    font-size: .8rem;
+}

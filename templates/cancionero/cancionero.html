@@ -1,0 +1,166 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Cancionero{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/cancionero/cancionero.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    {# Encabezado y acceso al formulario de creación. #}
+    <section class="page-header">
+        <div>
+            <h1 class="page-title">Gestión del cancionero</h1>
+            <p class="page-subtitle">Organiza las canciones, sus letras y audios.</p>
+        </div>
+        <div class="page-acciones">
+            <a class="btn btn-primary btn-nuevo" href="{% url 'crear_cancion' %}">
+                <i class="fas fa-plus"></i> Nueva canción
+            </a>
+        </div>
+    </section>
+
+    {# Resumen de canciones activas e inactivas. #}
+    <section class="stats-grid" aria-label="Resumen del cancionero">
+        <article class="stat-card">
+            <span class="stat-icon stat-total"><i class="fas fa-music"></i></span>
+            <div>
+                <div class="stat-value">{{ total_general }}</div>
+                <div class="stat-label">Canciones registradas</div>
+            </div>
+        </article>
+        <article class="stat-card">
+            <span class="stat-icon stat-ok"><i class="fas fa-check-circle"></i></span>
+            <div>
+                <div class="stat-value">{{ total_activas }}</div>
+                <div class="stat-label">Activas</div>
+            </div>
+        </article>
+        <article class="stat-card">
+            <span class="stat-icon stat-off"><i class="fas fa-ban"></i></span>
+            <div>
+                <div class="stat-value">{{ total_inactivas }}</div>
+                <div class="stat-label">Inactivas</div>
+            </div>
+        </article>
+    </section>
+
+    {# Búsqueda, filtro, tabla y paginación. #}
+    <section class="panel" aria-label="Listado de canciones">
+        <div class="panel-toolbar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input
+                    type="search"
+                    class="form-control"
+                    id="buscarCanciones"
+                    placeholder="Buscar por título, letra o autor..."
+                    value="{{ q }}"
+                    aria-label="Buscar canciones"
+                >
+            </div>
+            <select class="form-control filtro-categoria" id="categoriaCancion" aria-label="Filtrar por categoría">
+                <option value="">Todas las categorías</option>
+                {% for valor, etiqueta in categorias %}
+                    <option value="{{ valor }}" {% if categoria == valor %}selected{% endif %}>{{ etiqueta }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table tabla-inicio">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Título</th>
+                        <th>Categoría</th>
+                        <th>Letra</th>
+                        <th>Audio</th>
+                        <th>Estado</th>
+                        <th class="text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cancion in canciones %}
+                        <tr>
+                            <td>{{ cancion.orden }}</td>
+                            <td class="fw-600">{{ cancion.titulo }}</td>
+                            <td>{{ cancion.get_categoria_display }}</td>
+                            <td class="letra-corta">{{ cancion.letra|truncatechars:100 }}</td>
+                            <td>
+                                {% if cancion.audio or cancion.audio_url %}
+                                    <span class="audio-disponible"><i class="fas fa-volume-up"></i> Disponible</span>
+                                {% else %}
+                                    <span class="text-muted">Sin audio</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge-estado {% if cancion.habilitada %}habilitada{% else %}inhabilitada{% endif %}">
+                                    {{ cancion.estado_texto }}
+                                </span>
+                            </td>
+                            <td class="text-right acciones">
+                                <a class="btn-accion" href="{% url 'detalle_cancion' cancion.id %}" title="Ver" aria-label="Ver {{ cancion.titulo }}">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a class="btn-accion" href="{% url 'editar_cancion' cancion.id %}" title="Editar" aria-label="Editar {{ cancion.titulo }}">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+                                <a class="btn-accion peligro" href="{% url 'eliminar_cancion' cancion.id %}" title="Eliminar" aria-label="Eliminar {{ cancion.titulo }}">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <i class="fas fa-music"></i>
+                                    <p>No se encontraron canciones.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <footer class="panel-footer">
+            <span class="resumen">
+                {% if paginator.count %}
+                    Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }} de {{ paginator.count }}
+                {% else %}
+                    Mostrando 0 de 0
+                {% endif %}
+            </span>
+            {% if paginator.num_pages > 1 %}
+                <nav aria-label="Paginación del cancionero">
+                    <ul class="pagination pagination-sm mb-0">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&amp;q={{ q|urlencode }}&amp;categoria={{ categoria|urlencode }}" aria-label="Página anterior">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_obj.number }} / {{ paginator.num_pages }}</span>
+                        </li>
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}&amp;q={{ q|urlencode }}&amp;categoria={{ categoria|urlencode }}" aria-label="Página siguiente">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </footer>
+    </section>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/cancionero/cancionero.js' %}"></script>
+{% endblock %}
