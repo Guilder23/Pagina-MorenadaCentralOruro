@@ -1,0 +1,17 @@
+@import url("../../inicio/crud/detalle.css");
+
+/* Ajusta el texto y enlaces largos dentro del detalle. */
+.detalle-descripcion {
+    overflow-wrap: anywhere;
+}
+
+.archivo-nombre {
+    margin-bottom: 14px;
+    overflow-wrap: anywhere;
+    color: var(--mc-muted);
+    font-size: .82rem;
+}
+
+.btn-descargar {
+    white-space: nowrap;
+}

@@ -1,0 +1,115 @@
+@import url("../../inicio/crud/crear.css");
+
+/* Deja espacio para descripciones con varias líneas. */
+.descripcion-textarea {
+    min-height: 130px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+/* Presenta las opciones de tipo como controles de selección claros. */
+.tipo-legend {
+    margin-bottom: 10px;
+    color: #44546a;
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .04em;
+}
+
+.tipo-legend span {
+    color: var(--mc-danger);
+}
+
+.tipo-archivo {
+    margin-bottom: 16px;
+}
+
+.tipo-archivo .tipo-legend {
+    padding: 0;
+}
+
+.tipo-opciones {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.tipo-opciones .tipo-opcion {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    margin: 0;
+    padding: 5px;
+    border: 1px solid #dce3ed;
+    border-radius: 9px;
+    background: #fff;
+    color: var(--mc-text);
+    cursor: pointer;
+    font-size: .72rem;
+    white-space: nowrap;
+    transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease;
+}
+
+.tipo-opcion:hover,
+.tipo-opcion.is-selected {
+    border-color: var(--mc-primary);
+    background: #f5f8ff;
+    box-shadow: 0 3px 12px rgb(34 72 130 / 10%);
+}
+
+.tipo-icono {
+    display: grid;
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+    place-items: center;
+    font-size: .85rem;
+}
+
+.tipo-icono-pdf {
+    color: #bd2835;
+}
+
+.tipo-icono-mp3 {
+    color: #2459a6;
+}
+
+.tipo-opciones .tipo-etiqueta {
+    font-size: .6rem;
+    font-weight: 800;
+    line-height: 1.2;
+    text-transform: none;
+}
+
+.tipo-opcion input {
+    accent-color: var(--mc-primary);
+}
+
+.tipo-opcion input:focus-visible {
+    outline: 2px solid var(--mc-primary);
+    outline-offset: 3px;
+}
+
+.file-size-error {
+    display: block;
+    margin-top: 7px;
+    color: var(--mc-danger);
+    font-weight: 700;
+}
+
+.file-size-error[hidden] {
+    display: none;
+}
+
+.file-size-help {
+    display: block;
+    margin-top: 6px;
+    color: var(--mc-muted);
+    font-size: .72rem;
+}
+
+.file-size-help i {
+    margin-right: 4px;
+    color: var(--mc-primary-light);
+}

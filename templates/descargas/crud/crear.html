@@ -1,0 +1,96 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Nueva descarga{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/descargas/crud/crear.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    {# Encabezado y navegación de regreso al listado. #}
+    <header class="crud-header">
+        <div>
+            <a class="crud-volver" href="{% url 'listar_descargas' %}">
+                <i class="fas fa-arrow-left"></i> Volver a Descargas
+            </a>
+            <div class="crud-kicker"><i class="fas fa-download"></i> Gestión de descargas</div>
+            <h1 class="page-title">Nueva descarga</h1>
+            <p class="page-subtitle">Registra la información y adjunta un PDF o un MP3.</p>
+        </div>
+    </header>
+
+    {# Formulario de alta de archivo descargable. #}
+    <form class="crud-layout" method="post" enctype="multipart/form-data" id="formDescarga">
+        {% csrf_token %}
+        <section class="crud-panel crud-main-card">
+            <div class="crud-panel-header">
+                <span class="section-icon"><i class="fas fa-edit"></i></span>
+                <div><h2>Información del archivo</h2><p>Completa los datos de la descarga.</p></div>
+            </div>
+            <div class="crud-panel-body">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="ordenDescarga">Orden <span>*</span></label>
+                        <input class="form-control" type="number" id="ordenDescarga" name="orden" min="1" value="{{ datos.orden|default:'1' }}" required>
+                    </div>
+                    <div class="form-group col-md-9">
+                        <label for="nombreDescarga">Nombre <span>*</span></label>
+                        <input class="form-control" id="nombreDescarga" name="nombre" maxlength="200" value="{{ datos.nombre|default:'' }}" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="descripcionDescarga">Descripción <span>*</span></label>
+                    <textarea class="form-control descripcion-textarea" id="descripcionDescarga" name="descripcion" rows="5" required>{{ datos.descripcion|default:'' }}</textarea>
+                </div>
+            </div>
+        </section>
+
+        {# Archivo PDF o MP3 y texto informativo sobre sus formatos. #}
+        <aside class="crud-side">
+            <section class="crud-panel media-card">
+                <div class="crud-panel-header">
+                    <span class="section-icon"><i class="fas fa-file-upload"></i></span>
+                    <div><h2>Archivo</h2><p>Obligatorio</p></div>
+                </div>
+                <div class="crud-panel-body">
+                    <fieldset class="form-group tipo-archivo">
+                        <legend class="tipo-legend">Tipo <span>*</span></legend>
+                        <div class="tipo-opciones">
+                            {% for valor, etiqueta in tipos %}
+                                <label class="tipo-opcion">
+                                    <input type="radio" name="tipo" value="{{ valor }}" {% if datos.tipo == valor or not datos and valor == 'pdf' %}checked{% endif %} required>
+                                    <span class="tipo-icono tipo-icono-{{ valor }}" aria-hidden="true">
+                                        {% if valor == 'pdf' %}<i class="fas fa-file-pdf"></i>{% else %}<i class="fas fa-file-audio"></i>{% endif %}
+                                    </span>
+                                    <span class="tipo-etiqueta">{{ etiqueta }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </fieldset>
+                    <label for="archivoDescarga">Selecciona el archivo <span>*</span></label>
+                    <div class="upload-box">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <strong>Selecciona un archivo</strong>
+                        <span id="nombreArchivoSeleccionado">Selecciona un documento PDF</span>
+                        <input type="file" id="archivoDescarga" name="archivo" accept=".pdf,application/pdf" data-max-size="{{ max_file_size_bytes }}" required>
+                    </div>
+                    <small class="file-size-help"><i class="fas fa-info-circle" aria-hidden="true"></i> Máximo {{ max_file_size_mb }} MB por archivo</small>
+                    <small class="field-help" id="ayudaTipoArchivo">Solo se aceptan archivos .pdf para Documento PDF.</small>
+                    <small class="file-size-error" id="errorTipoArchivo" role="alert" hidden></small>
+                    <small class="file-size-error" id="errorTamanoArchivo" role="alert" hidden>El archivo supera el límite de {{ max_file_size_mb }} MB.</small>
+                </div>
+            </section>
+        </aside>
+
+        {# Acciones para cancelar o crear la descarga. #}
+        <footer class="crud-panel-footer">
+            <a class="btn btn-light" href="{% url 'listar_descargas' %}">Cancelar</a>
+            <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> Guardar descarga</button>
+        </footer>
+    </form>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/descargas/crud/crear.js' %}"></script>
+{% endblock %}

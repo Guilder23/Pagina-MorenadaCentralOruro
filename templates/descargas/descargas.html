@@ -1,0 +1,167 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Descargas{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/descargas/descargas.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    {# Encabezado y acceso al formulario de creación. #}
+    <section class="page-header">
+        <div>
+            <h1 class="page-title">Gestión de descargas</h1>
+            <p class="page-subtitle">Administra documentos PDF y audios MP3 disponibles.</p>
+        </div>
+        <div class="page-acciones">
+            <a class="btn btn-primary btn-nuevo" href="{% url 'crear_descarga' %}">
+                <i class="fas fa-plus"></i> Nueva descarga
+            </a>
+        </div>
+    </section>
+
+    {# Resumen de registros por formato. #}
+    <section class="stats-grid" aria-label="Resumen de descargas">
+        <article class="stat-card">
+            <span class="stat-icon stat-total"><i class="fas fa-download"></i></span>
+            <div>
+                <div class="stat-value">{{ total_general }}</div>
+                <div class="stat-label">Archivos registrados</div>
+            </div>
+        </article>
+        <article class="stat-card">
+            <span class="stat-icon stat-ok"><i class="fas fa-file-pdf"></i></span>
+            <div>
+                <div class="stat-value">{{ total_pdf }}</div>
+                <div class="stat-label">Documentos PDF</div>
+            </div>
+        </article>
+        <article class="stat-card">
+            <span class="stat-icon stat-off"><i class="fas fa-file-audio"></i></span>
+            <div>
+                <div class="stat-value">{{ total_mp3 }}</div>
+                <div class="stat-label">Audios MP3</div>
+            </div>
+        </article>
+    </section>
+
+    {# Búsqueda, filtro por tipo, tabla y paginación. #}
+    <section class="panel" aria-label="Listado de descargas">
+        <div class="panel-toolbar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input
+                    type="search"
+                    class="form-control"
+                    id="buscarDescargas"
+                    placeholder="Buscar por nombre o descripción..."
+                    value="{{ q }}"
+                    aria-label="Buscar descargas"
+                >
+            </div>
+            <select class="form-control filtro-tipo" id="tipoDescarga" aria-label="Filtrar por tipo">
+                <option value="">Todos los tipos</option>
+                {% for valor, etiqueta in tipos %}
+                    <option value="{{ valor }}" {% if tipo == valor %}selected{% endif %}>{{ etiqueta }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table tabla-inicio">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Tipo</th>
+                        <th>Archivo</th>
+                        <th class="text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for descarga in descargas %}
+                        <tr>
+                            <td>{{ descarga.orden }}</td>
+                            <td class="fw-600">{{ descarga.nombre }}</td>
+                            <td class="descripcion-corta">{{ descarga.descripcion|truncatechars:100 }}</td>
+                            <td>
+                                <span class="tipo-descarga tipo-{{ descarga.tipo }}">
+                                    {% if descarga.tipo == 'pdf' %}<i class="fas fa-file-pdf"></i>{% else %}<i class="fas fa-file-audio"></i>{% endif %}
+                                    {{ descarga.get_tipo_display }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if descarga.archivo %}
+                                    <a class="archivo-descarga" href="{{ descarga.archivo.url }}" target="_blank" rel="noopener noreferrer">
+                                        <i class="fas fa-download"></i> Descargar
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">Sin archivo</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-right acciones">
+                                <a class="btn-accion" href="{% url 'detalle_descarga' descarga.id %}" title="Ver" aria-label="Ver {{ descarga.nombre }}">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a class="btn-accion" href="{% url 'editar_descarga' descarga.id %}" title="Editar" aria-label="Editar {{ descarga.nombre }}">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+                                <a class="btn-accion peligro" href="{% url 'eliminar_descarga' descarga.id %}" title="Eliminar" aria-label="Eliminar {{ descarga.nombre }}">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <i class="fas fa-download"></i>
+                                    <p>No se encontraron descargas.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <footer class="panel-footer">
+            <span class="resumen">
+                {% if paginator.count %}
+                    Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }} de {{ paginator.count }}
+                {% else %}
+                    Mostrando 0 de 0
+                {% endif %}
+            </span>
+            {% if paginator.num_pages > 1 %}
+                <nav aria-label="Paginación de descargas">
+                    <ul class="pagination pagination-sm mb-0">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&amp;q={{ q|urlencode }}&amp;tipo={{ tipo|urlencode }}" aria-label="Página anterior">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_obj.number }} / {{ paginator.num_pages }}</span>
+                        </li>
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}&amp;q={{ q|urlencode }}&amp;tipo={{ tipo|urlencode }}" aria-label="Página siguiente">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </footer>
+    </section>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/descargas/descargas.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Editar descarga{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/descargas/crud/editar.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    {% with valor=datos|default:descarga %}
+        {# Encabezado y navegación de regreso al listado. #}
+        <header class="crud-header">
+            <div>
+                <a class="crud-volver" href="{% url 'listar_descargas' %}">
+                    <i class="fas fa-arrow-left"></i> Volver a Descargas
+                </a>
+                <div class="crud-kicker"><i class="fas fa-download"></i> Gestión de descargas</div>
+                <h1 class="page-title">Editar descarga</h1>
+                <p class="page-subtitle">Actualiza los datos o reemplaza el archivo adjunto.</p>
+            </div>
+        </header>
+
+        {# Formulario precargado para actualizar un archivo descargable. #}
+        <form class="crud-layout" method="post" enctype="multipart/form-data" id="formDescarga">
+            {% csrf_token %}
+            <section class="crud-panel crud-main-card">
+                <div class="crud-panel-header">
+                    <span class="section-icon"><i class="fas fa-edit"></i></span>
+                    <div><h2>Información del archivo</h2><p>Modifica los datos de la descarga.</p></div>
+                </div>
+                <div class="crud-panel-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="ordenDescarga">Orden <span>*</span></label>
+                            <input class="form-control" type="number" id="ordenDescarga" name="orden" min="1" value="{{ valor.orden }}" required>
+                        </div>
+                        <div class="form-group col-md-9">
+                            <label for="nombreDescarga">Nombre <span>*</span></label>
+                            <input class="form-control" id="nombreDescarga" name="nombre" maxlength="200" value="{{ valor.nombre }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcionDescarga">Descripción <span>*</span></label>
+                        <textarea class="form-control descripcion-textarea" id="descripcionDescarga" name="descripcion" rows="5" required>{{ valor.descripcion }}</textarea>
+                    </div>
+                </div>
+            </section>
+
+            {# Muestra el archivo actual y permite reemplazarlo. #}
+            <aside class="crud-side">
+                <section class="crud-panel media-card">
+                    <div class="crud-panel-header">
+                        <span class="section-icon"><i class="fas fa-file-upload"></i></span>
+                        <div><h2>Archivo</h2><p>Opcional</p></div>
+                    </div>
+                    <div class="crud-panel-body">
+                        <fieldset class="form-group tipo-archivo">
+                            <legend class="tipo-legend">Tipo <span>*</span></legend>
+                            <div class="tipo-opciones">
+                                {% for tipo, etiqueta in tipos %}
+                                    <label class="tipo-opcion">
+                                        <input type="radio" name="tipo" value="{{ tipo }}" data-current-type="{{ descarga.tipo }}" {% if valor.tipo == tipo %}checked{% endif %} required>
+                                        <span class="tipo-icono tipo-icono-{{ tipo }}" aria-hidden="true">
+                                            {% if tipo == 'pdf' %}<i class="fas fa-file-pdf"></i>{% else %}<i class="fas fa-file-audio"></i>{% endif %}
+                                        </span>
+                                        <span class="tipo-etiqueta">{{ etiqueta }}</span>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        </fieldset>
+                        <label for="archivoDescarga">{% if descarga.archivo %}Reemplazar archivo{% else %}Subir archivo{% endif %}</label>
+                        <input type="checkbox" id="eliminarArchivo" name="eliminar_archivo" value="1" {% if eliminar_archivo %}checked{% endif %} hidden>
+                        <div class="upload-box">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <strong>Selecciona un archivo</strong>
+                            <span id="nombreArchivoSeleccionado">Selecciona un documento PDF</span>
+                            <input type="file" id="archivoDescarga" name="archivo" accept=".pdf,application/pdf" data-max-size="{{ max_file_size_bytes }}">
+                        </div>
+                        <div class="archivo-seleccionado" id="archivoSeleccionadoPreview" aria-live="polite" hidden>
+                            <span class="archivo-seleccionado-icono" id="archivoSeleccionadoIcono" aria-hidden="true">
+                                <i class="fas fa-file-pdf"></i>
+                            </span>
+                            <div class="archivo-seleccionado-info">
+                                <span class="archivo-seleccionado-titulo">Nuevo archivo</span>
+                                <a id="archivoSeleccionadoEnlace" class="archivo-seleccionado-nombre" target="_blank" rel="noopener noreferrer"></a>
+                                <small id="archivoSeleccionadoTamano"></small>
+                            </div>
+                            <button class="btn-eliminar-archivo" id="botonQuitarSeleccion" type="button" title="Quitar archivo seleccionado" aria-label="Quitar archivo seleccionado">
+                                <i class="fas fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <small class="file-size-help"><i class="fas fa-info-circle" aria-hidden="true"></i> Máximo {{ max_file_size_mb }} MB por archivo</small>
+                        <small class="field-help" id="ayudaTipoArchivo">Solo se aceptan archivos .pdf para Documento PDF.</small>
+                        <small class="file-size-error" id="errorTipoArchivo" role="alert" hidden></small>
+                        {% if descarga.archivo %}
+                            <div class="archivo-actual-fila{% if eliminar_archivo %} is-removing{% endif %}" id="archivoActualFila">
+                                <p class="archivo-actual">
+                                    <span>Archivo actual:</span>
+                                    <a class="archivo-actual-enlace" href="{{ descarga.archivo.url }}" target="_blank" rel="noopener noreferrer">
+                                        {{ descarga.archivo.name|cut:"descargas/" }}
+                                    </a>
+                                </p>
+                                <button
+                                    class="btn-eliminar-archivo"
+                                    id="botonEliminarArchivo"
+                                    type="button"
+                                    title="{% if eliminar_archivo %}Cancelar eliminación{% else %}Eliminar archivo{% endif %}"
+                                    aria-label="{% if eliminar_archivo %}Cancelar eliminación del archivo{% else %}Eliminar archivo adjunto{% endif %}"
+                                >
+                                    <i class="fas {% if eliminar_archivo %}fa-undo{% else %}fa-trash{% endif %}" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <small class="file-remove-status" id="estadoEliminarArchivo" {% if not eliminar_archivo %}hidden{% endif %}>El archivo se eliminará al guardar.</small>
+                        {% else %}
+                            <p class="archivo-actual" id="sinArchivoActual">No hay un archivo adjunto.</p>
+                        {% endif %}
+                        {% if descarga.archivo %}
+                            <small class="field-help">Si no seleccionas otro archivo, se conservará el actual.</small>
+                        {% else %}
+                            <small class="field-help">Puedes adjuntar un archivo cuando lo necesites.</small>
+                        {% endif %}
+                        <small class="file-size-error" id="errorTamanoArchivo" role="alert" hidden>El archivo supera el límite de {{ max_file_size_mb }} MB.</small>
+                    </div>
+                </section>
+            </aside>
+
+            {# Acciones para cancelar o guardar los cambios. #}
+            <footer class="crud-panel-footer">
+                <a class="btn btn-light" href="{% url 'listar_descargas' %}">Cancelar</a>
+                <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> Actualizar descarga</button>
+            </footer>
+        </form>
+    {% endwith %}
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/descargas/crud/editar.js' %}"></script>
+{% endblock %}

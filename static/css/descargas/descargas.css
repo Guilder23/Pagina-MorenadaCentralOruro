@@ -1,0 +1,74 @@
+@import url("../presidentes/presidentes.css");
+
+/* Ajusta el buscador y el filtro del listado. */
+.panel .search-box {
+    max-width: 520px;
+}
+
+.filtro-tipo {
+    flex: 0 0 220px;
+}
+
+/* Alinea las columnas y limita la descripción para conservar filas compactas. */
+.tabla-inicio td {
+    vertical-align: middle;
+}
+
+.descripcion-corta {
+    max-width: 420px;
+    white-space: normal;
+    line-height: 1.55;
+}
+
+/* Mantiene estable la distribución de la tabla. */
+.panel .tabla-inicio {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.panel .tabla-inicio th:nth-child(1),
+.panel .tabla-inicio td:nth-child(1) {
+    width: 6%;
+}
+
+.panel .tabla-inicio th:nth-child(2),
+.panel .tabla-inicio td:nth-child(2) {
+    width: 20%;
+}
+
+.panel .tabla-inicio th:nth-child(4),
+.panel .tabla-inicio td:nth-child(4) {
+    width: 16%;
+}
+
+.panel .tabla-inicio th:nth-child(5),
+.panel .tabla-inicio td:nth-child(5) {
+    width: 14%;
+}
+
+.panel .tabla-inicio th:nth-child(6),
+.panel .tabla-inicio td:nth-child(6) {
+    width: 20%;
+}
+
+/* Colores e iconos para diferenciar PDF y MP3. */
+.tipo-descarga {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .8rem;
+    white-space: nowrap;
+}
+
+.tipo-pdf {
+    color: #bd2835;
+}
+
+.tipo-mp3 {
+    color: var(--mc-primary);
+}
+
+.archivo-descarga {
+    white-space: nowrap;
+    font-size: .82rem;
+}

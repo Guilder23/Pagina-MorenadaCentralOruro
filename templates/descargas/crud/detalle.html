@@ -1,0 +1,77 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Detalle de descarga{% endblock %}
+
+{% block estilos_extra %}
+    <link rel="stylesheet" href="{% static 'css/descargas/crud/detalle.css' %}">
+{% endblock %}
+
+{% block contenido %}
+    {# Identificación de la descarga y acceso directo a edición. #}
+    <header class="crud-header">
+        <div>
+            <a class="crud-volver" href="{% url 'listar_descargas' %}">
+                <i class="fas fa-arrow-left"></i> Volver a Descargas
+            </a>
+            <div class="crud-kicker"><i class="fas fa-download"></i> Gestión de descargas</div>
+            <h1 class="page-title">Detalle de descarga</h1>
+            <p class="page-subtitle">Consulta la descripción y el archivo disponible.</p>
+        </div>
+        <a class="btn btn-primary" href="{% url 'editar_descarga' descarga.id %}">
+            <i class="fas fa-pen"></i> Editar
+        </a>
+    </header>
+
+    {# Descripción y acceso al documento PDF o audio MP3. #}
+    <div class="crud-layout">
+        <article class="crud-panel detalle-panel">
+            <div class="crud-panel-header">
+                <span class="section-icon"><i class="fas fa-info-circle"></i></span>
+                <div><h2>Información principal</h2><p>Datos del archivo descargable.</p></div>
+            </div>
+            <div class="crud-panel-body">
+                <div class="detalle-titulo">
+                    <span class="detalle-etiqueta">Orden {{ descarga.orden }} · {{ descarga.get_tipo_display }}</span>
+                    <h2>{{ descarga.nombre }}</h2>
+                </div>
+                <div class="detalle-descripcion">
+                    <h3>Descripción</h3>
+                    <p>{{ descarga.descripcion|linebreaksbr }}</p>
+                </div>
+            </div>
+        </article>
+
+        {# Enlace directo para abrir o descargar el archivo. #}
+        <aside class="crud-side">
+            <section class="crud-panel media-card">
+                <div class="crud-panel-header">
+                    <span class="section-icon"><i class="fas {% if descarga.tipo == 'pdf' %}fa-file-pdf{% else %}fa-file-audio{% endif %}"></i></span>
+                    <div><h2>Archivo</h2><p>{{ descarga.get_tipo_display }}</p></div>
+                </div>
+                <div class="crud-panel-body">
+                    {% if descarga.archivo %}
+                        <p class="archivo-nombre">{{ descarga.archivo.name|cut:"descargas/" }}</p>
+                        <a class="btn btn-primary btn-descargar" href="{{ descarga.archivo.url }}" download>
+                            <i class="fas fa-download"></i> Descargar archivo
+                        </a>
+                    {% else %}
+                        <p class="archivo-nombre">No hay un archivo adjunto disponible.</p>
+                    {% endif %}
+                </div>
+            </section>
+        </aside>
+
+        {# Navegación para volver al listado o editar la descarga. #}
+        <footer class="crud-panel-footer">
+            <a class="btn btn-light" href="{% url 'listar_descargas' %}">Volver</a>
+            <a class="btn btn-primary" href="{% url 'editar_descarga' descarga.id %}">
+                <i class="fas fa-pen"></i> Editar descarga
+            </a>
+        </footer>
+    </div>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{% static 'js/descargas/crud/detalle.js' %}"></script>
+{% endblock %}

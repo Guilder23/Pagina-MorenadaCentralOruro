@@ -1,0 +1,224 @@
+@import url("../../inicio/crud/editar.css");
+
+/* Deja espacio para descripciones con varias líneas. */
+.descripcion-textarea {
+    min-height: 130px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+/* Presenta las opciones de tipo como controles de selección claros. */
+.tipo-legend {
+    margin-bottom: 10px;
+    color: #44546a;
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .04em;
+}
+
+.tipo-legend span {
+    color: var(--mc-danger);
+}
+
+.tipo-archivo {
+    margin-bottom: 16px;
+}
+
+.tipo-archivo .tipo-legend {
+    padding: 0;
+}
+
+.tipo-opciones {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.tipo-opciones .tipo-opcion {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    margin: 0;
+    padding: 5px;
+    border: 1px solid #dce3ed;
+    border-radius: 9px;
+    background: #fff;
+    color: var(--mc-text);
+    cursor: pointer;
+    font-size: .72rem;
+    white-space: nowrap;
+    transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease;
+}
+
+.tipo-opcion:hover,
+.tipo-opcion.is-selected {
+    border-color: var(--mc-primary);
+    background: #f5f8ff;
+    box-shadow: 0 3px 12px rgb(34 72 130 / 10%);
+}
+
+.tipo-icono {
+    display: grid;
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+    place-items: center;
+    font-size: .85rem;
+}
+
+.tipo-icono-pdf {
+    color: #bd2835;
+}
+
+.tipo-icono-mp3 {
+    color: #2459a6;
+}
+
+.tipo-opciones .tipo-etiqueta {
+    font-size: .6rem;
+    font-weight: 800;
+    line-height: 1.2;
+    text-transform: none;
+}
+
+.tipo-opcion input {
+    accent-color: var(--mc-primary);
+}
+
+.tipo-opcion input:focus-visible {
+    outline: 2px solid var(--mc-primary);
+    outline-offset: 3px;
+}
+
+.file-size-error {
+    display: block;
+    margin-top: 7px;
+    color: var(--mc-danger);
+    font-weight: 700;
+}
+
+.file-size-error[hidden] {
+    display: none;
+}
+
+.file-size-help {
+    display: block;
+    margin-top: 6px;
+    color: var(--mc-muted);
+    font-size: .72rem;
+}
+
+.file-size-help i {
+    margin-right: 4px;
+    color: var(--mc-primary-light);
+}
+
+/* Permite identificar y abrir el archivo que está guardado actualmente. */
+.archivo-actual {
+    min-width: 0;
+    margin: 14px 0 8px;
+    overflow-wrap: anywhere;
+    font-size: .8rem;
+}
+
+.archivo-actual-fila {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.archivo-seleccionado {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 10px;
+    padding: 9px;
+    border: 1px solid #d6e1ef;
+    border-radius: 9px;
+    background: #f7faff;
+}
+
+.archivo-seleccionado[hidden] {
+    display: none;
+}
+
+.archivo-seleccionado-icono {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    place-items: center;
+    border-radius: 8px;
+    background: #fff0f0;
+    color: #bd2835;
+}
+
+.archivo-seleccionado-icono.is-audio {
+    background: #edf4ff;
+    color: #2459a6;
+}
+
+.archivo-seleccionado-info {
+    display: grid;
+    min-width: 0;
+    flex: 1;
+    gap: 2px;
+}
+
+.archivo-seleccionado-titulo,
+.archivo-seleccionado-info small {
+    color: var(--mc-muted);
+    font-size: .68rem;
+}
+
+.archivo-seleccionado-nombre {
+    overflow: hidden;
+    color: var(--mc-primary);
+    font-size: .76rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.archivo-actual-fila .archivo-actual {
+    margin-bottom: 0;
+}
+
+.archivo-actual-fila.is-removing .archivo-actual-enlace {
+    opacity: .55;
+    text-decoration: line-through;
+}
+
+.btn-eliminar-archivo {
+    display: grid;
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    place-items: center;
+    border: 1px solid #f0c9cc;
+    border-radius: 8px;
+    background: #fff7f7;
+    color: #b4232f;
+    cursor: pointer;
+    transition: background-color .18s ease, color .18s ease, border-color .18s ease;
+}
+
+.btn-eliminar-archivo:hover {
+    border-color: #b4232f;
+    background: #b4232f;
+    color: #fff;
+}
+
+.file-remove-status {
+    display: block;
+    margin-top: 6px;
+    color: #b4232f;
+    font-size: .76rem;
+    font-weight: 700;
+}
+
+.file-remove-status[hidden] {
+    display: none;
+}

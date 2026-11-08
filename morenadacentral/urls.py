@@ -20,6 +20,8 @@ urlpatterns = [
     path("", include("apps.conjuntos.urls")),
     # Incorpora las rutas del CRUD del cancionero.
     path("", include("apps.cancionero.urls")),
+    # Incorpora las rutas del CRUD de descargas.
+    path("", include("apps.descargas.urls")),
     path("", include("apps.directorio.urls")),
     path("", include("apps.reportes.urls")),
 ]
