@@ -3,3 +3,4 @@ openpyxl>=3.1
 psycopg[binary]>=3.2,<4
 python-dotenv>=1.0,<2
 bleach>=6.1,<7
+Pillow>=10.0,<13

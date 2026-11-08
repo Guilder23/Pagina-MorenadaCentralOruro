@@ -6,6 +6,8 @@ from . import views
 urlpatterns = [
     path("", views.pagina_consulta, name="consulta"),
     path("danzarines/", views.listar_danzarines, name="listar_danzarines"),
+    path("danzarines/mi-perfil/", views.perfil_danzarin, name="perfil_danzarin"),
+    path("danzarines/mi-perfil/credenciales/", views.cambiar_credenciales_danzarin, name="cambiar_credenciales_danzarin"),
     path("danzarines/crear/", views.crear_danzarin, name="crear_danzarin"),
     path("danzarines/<int:id>/obtener/", views.obtener_danzarin, name="obtener_danzarin"),
     path("danzarines/<int:id>/editar/", views.editar_danzarin, name="editar_danzarin"),

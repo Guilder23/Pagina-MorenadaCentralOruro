@@ -1,10 +1,16 @@
+from io import BytesIO
+from tempfile import TemporaryDirectory
+
+from PIL import Image
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from apps.bloques.models import Bloque
 
+from .cuentas import crear_cuenta_danzarin
 from .models import ConsultaHabilitacion, Danzarin
 
 
@@ -122,16 +128,126 @@ class GestionDanzarinesTests(TestCase):
         self.client.post(reverse("eliminar_danzarin", args=[self.danzarin.pk]))
         self.assertFalse(Danzarin.objects.filter(pk=self.danzarin.pk).exists())
 
-    def test_ci_opcional_y_unico_si_se_informa(self):
+    def test_ci_requerido_y_unico_para_crear_cuenta(self):
         self.client.force_login(self.preventista)
         self.client.post(reverse("crear_danzarin"), datos_danzarin(self.bloque, ci="7654321"))
         self.assertFalse(Danzarin.objects.filter(codigo="200181").exists())
         self.client.post(reverse("crear_danzarin"), datos_danzarin(self.bloque, ci=""))
-        self.assertTrue(Danzarin.objects.filter(codigo="200181", ci="").exists())
+        self.assertFalse(Danzarin.objects.filter(codigo="200181").exists())
         self.client.post(
-            reverse("crear_danzarin"), datos_danzarin(self.bloque, codigo="200182", ci="")
+            reverse("crear_danzarin"), datos_danzarin(self.bloque, codigo="200182", ci="7654321")
         )
-        self.assertTrue(Danzarin.objects.filter(codigo="200182").exists())
+        self.assertFalse(Danzarin.objects.filter(codigo="200182").exists())
+
+    def test_creacion_crea_cuenta_usuario_y_password_inicial_ci(self):
+        self.client.force_login(self.admin)
+        self.client.post(
+            reverse("crear_danzarin"),
+            datos_danzarin(self.bloque, apellido_paterno="Gutiérrez", correo="danzarin@example.com"),
+        )
+        danzarin = Danzarin.objects.get(codigo="200181")
+        cuenta = danzarin.usuario
+        self.assertEqual(cuenta.username, "gutierrez")
+        self.assertTrue(cuenta.check_password("1234567"))
+        self.assertEqual(cuenta.perfil.rol, "danzarin")
+        self.assertTrue(cuenta.perfil.requiere_cambio_password)
+        self.assertEqual(cuenta.email, "danzarin@example.com")
+
+    def test_apellido_paterno_repetido_genera_usuario_unico(self):
+        self.client.force_login(self.admin)
+        self.client.post(reverse("crear_danzarin"), datos_danzarin(self.bloque))
+        datos = datos_danzarin(self.bloque, codigo="200182", ci="2234567")
+        self.client.post(reverse("crear_danzarin"), datos)
+        self.assertEqual(Danzarin.objects.get(codigo="200182").usuario.username, "aguilar-2")
+
+    def test_primer_ingreso_obliga_a_cambiar_credenciales(self):
+        self.client.force_login(self.admin)
+        self.client.post(reverse("crear_danzarin"), datos_danzarin(self.bloque))
+        danzarin = Danzarin.objects.get(codigo="200181")
+        self.client.logout()
+
+        self.assertTrue(self.client.login(username="aguilar", password="1234567"))
+        cambio_url = reverse("cambiar_credenciales_danzarin")
+        response = self.client.get(reverse("listar_danzarines"))
+        self.assertRedirects(response, cambio_url)
+        self.assertEqual(self.client.get(cambio_url).status_code, 200)
+
+        response = self.client.post(
+            cambio_url,
+            {
+                "old_password": "1234567",
+                "new_password1": "Morenada-Celeste-2026!",
+                "new_password2": "Morenada-Celeste-2026!",
+                "username": "aguilar.c",
+            },
+        )
+        self.assertRedirects(response, reverse("perfil_danzarin"))
+        danzarin.usuario.refresh_from_db()
+        self.assertEqual(danzarin.usuario.username, "aguilar.c")
+        self.assertTrue(danzarin.usuario.check_password("Morenada-Celeste-2026!"))
+        self.assertFalse(danzarin.usuario.perfil.requiere_cambio_password)
+        self.assertRedirects(self.client.get(reverse("listar_danzarines")), reverse("perfil_danzarin"))
+
+    def test_danzarin_solo_puede_cambiar_usuario_y_foto_desde_perfil(self):
+        cuenta = crear_cuenta_danzarin(self.danzarin)
+        cuenta.perfil.requiere_cambio_password = False
+        cuenta.perfil.save(update_fields=["requiere_cambio_password"])
+        self.client.force_login(cuenta)
+        perfil_url = reverse("perfil_danzarin")
+        response = self.client.get(perfil_url)
+        self.assertContains(response, 'id="id_ci" value="7654321" disabled')
+        self.assertContains(response, 'name="username"')
+        self.assertNotContains(response, 'name="ci"')
+
+        imagen = BytesIO()
+        Image.new("RGB", (2, 2), color="blue").save(imagen, format="PNG")
+        imagen.seek(0)
+        archivo = SimpleUploadedFile("perfil.png", imagen.read(), content_type="image/png")
+        with TemporaryDirectory() as media_root, override_settings(MEDIA_ROOT=media_root):
+            response = self.client.post(
+                perfil_url,
+                {
+                    "username": "brenda.m",
+                    "ci": "1000000",
+                    "complemento_ci": "B",
+                    "genero": "F",
+                    "fecha_nacimiento": "2000-05-12",
+                    "correo": "brenda@example.com",
+                    "apellido_paterno": "Mendoza",
+                    "apellido_materno": "Quiroga",
+                    "primer_nombre": "Brenda",
+                    "segundo_nombre": "Ivana",
+                    "foto_perfil": archivo,
+                },
+            )
+            self.danzarin.refresh_from_db()
+            self.assertTrue(self.danzarin.foto_perfil.storage.exists(self.danzarin.foto_perfil.name))
+        self.assertRedirects(response, reverse("perfil_danzarin"))
+        cuenta.refresh_from_db()
+        self.assertEqual(self.danzarin.apellido_paterno, "AGUILAR")
+        self.assertEqual(self.danzarin.ci, "7654321")
+        self.assertEqual(self.danzarin.genero, "")
+        self.assertEqual(cuenta.username, "brenda.m")
+        self.assertEqual(cuenta.email, "")
+
+    def test_administrador_puede_cambiar_usuario_y_restablecer_contrasena(self):
+        cuenta = crear_cuenta_danzarin(self.danzarin)
+        self.client.force_login(self.admin)
+        self.client.post(
+            reverse("editar_danzarin", args=[self.danzarin.pk]),
+            datos_danzarin(
+                self.bloque,
+                codigo=self.danzarin.codigo,
+                ci=self.danzarin.ci,
+                usuario="brenda.admin",
+                nueva_contrasena="Clave-Temporal-Segura-2026!",
+                habilitado="on",
+            ),
+        )
+        cuenta.refresh_from_db()
+        self.assertEqual(cuenta.username, "brenda.admin")
+        self.assertTrue(cuenta.check_password("Clave-Temporal-Segura-2026!"))
+        self.assertTrue(cuenta.perfil.requiere_cambio_password)
 
     def _excel(self, filas, nombre="datos.xlsx"):
         from io import BytesIO
@@ -151,12 +267,12 @@ class GestionDanzarinesTests(TestCase):
         self.client.force_login(self.preventista)
         archivo = self._excel(
             [
-                ["CODIGO", "APELLIDO PATERNO", "APELLIDO MATERNO", "PRIMER NOMBRE", "SEGUNDO NOMBRE", "ESTADO HABILITADO"],
-                [800055, "Aramayo", "Castillo", "Oscar", None, "HABILITADO"],
-                [800087, "Arancibia", "Escalera", "Alex", "Braulio", "INHABILITADO"],
-                [800087, "Repetido", None, "Fila", None, "HABILITADO"],
-                [200509, "Ya", None, "Existe", None, "HABILITADO"],
-                [800099, None, None, "SinApellido", None, "HABILITADO"],
+                ["CODIGO", "CI", "COMPLEMENTO CI", "GENERO", "FECHA NACIMIENTO", "CORREO", "APELLIDO PATERNO", "APELLIDO MATERNO", "PRIMER NOMBRE", "SEGUNDO NOMBRE", "ESTADO HABILITADO"],
+                [800055, "8500055", None, "M", "1995-08-12", "oscar@example.com", "Aramayo", "Castillo", "Oscar", None, "HABILITADO"],
+                [800087, "8500087", "A", "F", "1998-03-20", None, "Arancibia", "Escalera", "Alex", "Braulio", "INHABILITADO"],
+                [800087, "8500087", None, None, None, None, "Repetido", None, "Fila", None, "HABILITADO"],
+                [200509, "7654321", None, None, None, None, "Ya", None, "Existe", None, "HABILITADO"],
+                [800099, None, None, None, None, None, None, None, "SinApellido", None, "HABILITADO"],
             ]
         )
         r = self.client.post(
@@ -165,7 +281,11 @@ class GestionDanzarinesTests(TestCase):
         self.assertEqual(r.status_code, 200)
         self.assertEqual(Danzarin.objects.filter(codigo__in=["800055", "800087"]).count(), 2)
         d = Danzarin.objects.get(codigo="800055")
-        self.assertEqual((d.ci, d.apellido_paterno, d.bloque), ("", "ARAMAYO", self.bloque))
+        self.assertEqual((d.ci, d.apellido_paterno, d.bloque), ("8500055", "ARAMAYO", self.bloque))
+        self.assertEqual(d.usuario.username, "aramayo")
+        self.assertTrue(d.usuario.check_password("8500055"))
+        self.assertEqual(d.genero, "M")
+        self.assertEqual(d.correo, "oscar@example.com")
         self.assertTrue(d.habilitado)
         self.assertFalse(Danzarin.objects.get(codigo="800087").habilitado)
         self.assertFalse(Danzarin.objects.filter(codigo="800099").exists())
@@ -181,8 +301,8 @@ class GestionDanzarinesTests(TestCase):
         self.client.force_login(self.preventista)
         archivo = self._excel(
             [
-                ["CODIGO", "APELLIDO PATERNO", "APELLIDO MATERNO", "PRIMER NOMBRE", "SEGUNDO NOMBRE"],
-                [900001, "aguilar", "mendoza", "brenda", "ivana"],
+                ["CODIGO", "CI", "APELLIDO PATERNO", "APELLIDO MATERNO", "PRIMER NOMBRE", "SEGUNDO NOMBRE"],
+                [900001, "9900001", "aguilar", "mendoza", "brenda", "ivana"],
             ]
         )
         r = self.client.post(

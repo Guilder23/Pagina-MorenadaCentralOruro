@@ -14,10 +14,14 @@
                         <input type="text" class="form-control" id="editCodigo" name="codigo" maxlength="20" required>
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="editCi">CI</label>
-                        <input type="text" class="form-control campo-mayus" id="editCi" name="ci" maxlength="20">
+                        <label for="editCi">CI *</label>
+                        <input type="text" class="form-control campo-mayus" id="editCi" name="ci" maxlength="20" required>
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-2">
+                        <label for="editComplementoCi">Complemento</label>
+                        <input type="text" class="form-control campo-mayus" id="editComplementoCi" name="complemento_ci" maxlength="5">
+                    </div>
+                    <div class="form-group col-md-4">
                         <label for="editBloque">Bloque *</label>
                         <select class="form-control" id="editBloque" name="bloque" required>
                             <option value="">Selecciona un bloque</option>
@@ -25,6 +29,25 @@
                             <option value="{{ b.id }}"{% if not b.habilitado %} data-inhabilitado="1"{% endif %}>{{ b.nombre }}{% if not b.habilitado %} (inhabilitado){% endif %}</option>
                             {% endfor %}
                         </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="editGenero">Género</label>
+                        <select class="form-control" id="editGenero" name="genero">
+                            <option value="">Selecciona un género</option>
+                            <option value="F">Femenino</option>
+                            <option value="M">Masculino</option>
+                            <option value="O">Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="editFechaNacimiento">Fecha de nacimiento</label>
+                        <input type="date" class="form-control" id="editFechaNacimiento" name="fecha_nacimiento">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="editCorreo">Correo electrónico</label>
+                        <input type="email" class="form-control" id="editCorreo" name="correo" maxlength="254">
                     </div>
                 </div>
                 <div class="form-row">
@@ -52,6 +75,21 @@
                         <input type="checkbox" class="custom-control-input" id="editHabilitado" name="habilitado">
                         <label class="custom-control-label" for="editHabilitado">Danzarin habilitado</label>
                     </div>
+                    {% if user.is_superuser or user.perfil.rol == 'administrador' %}
+                    <hr>
+                    <h6><i class="fas fa-key"></i> Cuenta de acceso</h6>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="editUsuario">Usuario</label>
+                            <input type="text" class="form-control" id="editUsuario" name="usuario" maxlength="150">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="editNuevaContrasena">Nueva contraseña</label>
+                            <input type="password" class="form-control" id="editNuevaContrasena" name="nueva_contrasena" autocomplete="new-password">
+                        </div>
+                    </div>
+                    <small class="text-muted">Deja la contraseña vacía para no cambiarla. Una contraseña establecida aquí será temporal y deberá cambiarse al ingresar.</small>
+                    {% endif %}
                 </div>
             </div>
             <div class="modal-footer">

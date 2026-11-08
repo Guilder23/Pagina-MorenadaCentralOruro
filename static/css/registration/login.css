@@ -24,6 +24,7 @@ body.login-page .componente-footer { display: none; }
 
 .login-card h2 { font-weight: 700; font-size: 1.6rem; margin-bottom: 4px; }
 .login-sub { color: var(--mc-muted); margin-bottom: 22px; }
+.login-ayuda-danzarin { margin: -12px 0 18px; color: var(--mc-muted); font-size: .78rem; line-height: 1.45; }
 
 .login-alert {
     display: flex;

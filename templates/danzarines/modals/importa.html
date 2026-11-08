@@ -9,9 +9,11 @@
             <div class="modal-body">
                 <div class="importar-ayuda">
                     <p>El archivo <strong>.xlsx</strong> debe tener estas columnas:</p>
-                    <p class="importar-columnas">CODIGO · CI · APELLIDO PATERNO · APELLIDO MATERNO · PRIMER NOMBRE · SEGUNDO NOMBRE · ESTADO HABILITADO</p>
+                    <p class="importar-columnas">CODIGO · CI · COMPLEMENTO CI · GENERO · FECHA NACIMIENTO · CORREO · APELLIDOS · NOMBRES · ESTADO HABILITADO</p>
                     <ul>
-                        <li>Obligatorios: <strong>CODIGO</strong>, <strong>APELLIDO PATERNO</strong> y <strong>PRIMER NOMBRE</strong>. El <strong>CI es opcional</strong>.</li>
+                        <li>Obligatorios: <strong>CODIGO</strong>, <strong>CI</strong>, <strong>APELLIDO PATERNO</strong> y <strong>PRIMER NOMBRE</strong>.</li>
+                        <li>Se crearán las cuentas: usuario basado en apellido paterno y contraseña inicial igual al CI; deben cambiarla al iniciar.</li>
+                        <li>Complemento, género, fecha de nacimiento y correo son opcionales.</li>
                         <li>Opcional: una columna <strong>BLOQUE</strong> para asignar bloques distintos por fila.</li>
                         <li>Los códigos o CI ya registrados se omiten.</li>
                     </ul>

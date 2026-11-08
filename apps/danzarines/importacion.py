@@ -2,12 +2,17 @@ from __future__ import annotations
 
 import unicodedata
 from dataclasses import dataclass, field
+from datetime import date, datetime
 
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.db import transaction
+from django.utils.dateparse import parse_date
 from openpyxl import Workbook, load_workbook
 
 from apps.bloques.models import Bloque
 
+from .cuentas import crear_cuenta_danzarin
 from .models import Danzarin
 
 MAX_FILAS = 5000
@@ -16,6 +21,10 @@ MAX_BYTES = 5 * 1024 * 1024
 ENCABEZADOS = [
     "CODIGO",
     "CI",
+    "COMPLEMENTO CI",
+    "GENERO",
+    "FECHA NACIMIENTO",
+    "CORREO",
     "APELLIDO PATERNO",
     "APELLIDO MATERNO",
     "PRIMER NOMBRE",
@@ -26,6 +35,14 @@ ENCABEZADOS = [
 ALIAS = {
     "CODIGO": "codigo",
     "CI": "ci",
+    "COMPLEMENTO CI": "complemento_ci",
+    "COMPLEMENTO": "complemento_ci",
+    "GENERO": "genero",
+    "FECHA NACIMIENTO": "fecha_nacimiento",
+    "FECHA DE NACIMIENTO": "fecha_nacimiento",
+    "CORREO": "correo",
+    "EMAIL": "correo",
+    "CORREO ELECTRONICO": "correo",
     "APELLIDO PATERNO": "apellido_paterno",
     "APELLIDO MATERNO": "apellido_materno",
     "PRIMER NOMBRE": "primer_nombre",
@@ -64,6 +81,42 @@ def _texto(valor) -> str:
     if isinstance(valor, float) and valor.is_integer():
         valor = int(valor)
     return str(valor).strip()
+
+
+def _fecha(valor):
+    if isinstance(valor, datetime):
+        return valor.date()
+    if isinstance(valor, date):
+        return valor
+    texto = _texto(valor)
+    if not texto:
+        return None
+    parsed = parse_date(texto)
+    if parsed:
+        return parsed
+    for formato in ("%d/%m/%Y", "%d-%m-%Y"):
+        try:
+            return datetime.strptime(texto, formato).date()
+        except ValueError:
+            continue
+    raise ValueError("la fecha de nacimiento no es válida")
+
+
+def _genero(valor):
+    normalizado = _normalizar(valor)
+    equivalencias = {
+        "M": "M",
+        "MASCULINO": "M",
+        "F": "F",
+        "FEMENINO": "F",
+        "O": "O",
+        "OTRO": "O",
+    }
+    if not normalizado:
+        return ""
+    if normalizado not in equivalencias:
+        raise ValueError("el género debe ser Femenino, Masculino u Otro")
+    return equivalencias[normalizado]
 
 
 def _buscar_encabezado(filas):
@@ -122,11 +175,28 @@ def importar(archivo, bloque_defecto: Bloque, usuario) -> Resultado:
         if not codigo:
             resultado.errores.append(f"Fila {numero}: falta el código.")
             continue
+        if not ci:
+            resultado.errores.append(f"Fila {numero} ({codigo}): falta el CI para crear su cuenta.")
+            continue
         if not paterno or not primer:
             resultado.errores.append(f"Fila {numero} ({codigo}): faltan el apellido paterno o el primer nombre.")
             continue
         materno = valor(fila, "apellido_materno").upper()
         segundo = valor(fila, "segundo_nombre").upper()
+        complemento_ci = valor(fila, "complemento_ci").upper()
+        correo = valor(fila, "correo").lower()
+        try:
+            genero = _genero(valor(fila, "genero"))
+            fecha_pos = columnas.get("fecha_nacimiento")
+            fecha_nacimiento = _fecha(fila[fecha_pos]) if fecha_pos is not None and fecha_pos < len(fila) else None
+            if correo:
+                validate_email(correo)
+        except ValueError as exc:
+            resultado.errores.append(f"Fila {numero} ({codigo}): {exc}.")
+            continue
+        except ValidationError:
+            resultado.errores.append(f"Fila {numero} ({codigo}): el correo no es válido.")
+            continue
         nombre = " ".join(p for p in (paterno, materno, primer, segundo) if p)
         clave = _normalizar(nombre)
 
@@ -167,6 +237,10 @@ def importar(archivo, bloque_defecto: Bloque, usuario) -> Resultado:
             apellido_materno=materno,
             primer_nombre=primer,
             segundo_nombre=segundo,
+            complemento_ci=complemento_ci,
+            genero=genero,
+            fecha_nacimiento=fecha_nacimiento,
+            correo=correo,
             habilitado=estado not in {"INHABILITADO", "NO", "0", "FALSE"},
             creado_por=usuario,
         )
@@ -177,7 +251,9 @@ def importar(archivo, bloque_defecto: Bloque, usuario) -> Resultado:
         nuevos.append(nuevo)
 
     with transaction.atomic():
-        Danzarin.objects.bulk_create(nuevos)
+        for nuevo in nuevos:
+            nuevo.save()
+            crear_cuenta_danzarin(nuevo)
     resultado.creados = len(nuevos)
     return resultado
 
@@ -187,8 +263,8 @@ def generar_plantilla() -> Workbook:
     hoja = libro.active
     hoja.title = "Danzarines"
     hoja.append(ENCABEZADOS)
-    hoja.append(["800055", "", "ARAMAYO", "CASTILLO", "OSCAR", "", "HABILITADO"])
-    hoja.append(["800087", "1234567", "ARANCIBIA", "ESCALERA", "ALEX", "BRAULIO", "HABILITADO"])
-    for columna, ancho in zip("ABCDEFG", (12, 14, 22, 22, 18, 18, 20)):
+    hoja.append(["800055", "4589123", "", "M", "1995-08-12", "", "ARAMAYO", "CASTILLO", "OSCAR", "", "HABILITADO"])
+    hoja.append(["800087", "1234567", "A", "F", "1998-03-20", "alex@example.com", "ARANCIBIA", "ESCALERA", "ALEX", "BRAULIO", "HABILITADO"])
+    for columna, ancho in zip("ABCDEFGHIJK", (12, 14, 14, 14, 18, 28, 22, 22, 18, 18, 20)):
         hoja.column_dimensions[columna].width = ancho
     return libro

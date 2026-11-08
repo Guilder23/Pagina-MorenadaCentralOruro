@@ -15,6 +15,7 @@
         <section id="panelIngresar">
             <h2>Bienvenido</h2>
             <p class="login-sub">Ingresa tus credenciales para continuar</p>
+            <p class="login-ayuda-danzarin">Danzarín: usa tu apellido paterno como usuario y tu CI como contraseña inicial. Cámbiala al ingresar.</p>
 
             {% if form.non_field_errors %}
                 <div class="alert alert-danger login-alert" role="alert">
@@ -53,6 +54,15 @@
         <p class="enlace-consulta">
             <a href="{% url 'consulta' %}"><i class="fas fa-vote-yea"></i> Consultar habilitación</a>
         </p>
+        {% if admin_whatsapp %}
+        <p class="enlace-consulta">
+            <a href="https://wa.me/{{ admin_whatsapp|cut:'+' }}" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-whatsapp"></i> ¿Olvidaste tus credenciales? Contacta al administrador
+            </a>
+        </p>
+        {% else %}
+        <p class="login-ayuda-danzarin">Si olvidaste tus credenciales, comunícate con el administrador por WhatsApp.</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

@@ -7,6 +7,7 @@ class PerfilUsuario(models.Model):
         ADMINISTRADOR = "administrador", "Administrador"
         SUPERVISOR = "supervisor", "Supervisor"
         PREVENTISTA = "preventista", "Preventista"
+        DANZARIN = "danzarin", "Danzarín"
 
     usuario = models.OneToOneField(
         settings.AUTH_USER_MODEL,
@@ -26,6 +27,7 @@ class PerfilUsuario(models.Model):
         related_name="preventistas_supervisados",
     )
     activo = models.BooleanField(default=True)
+    requiere_cambio_password = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "Perfil de usuario"

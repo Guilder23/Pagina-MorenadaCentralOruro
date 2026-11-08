@@ -1,0 +1,108 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block titulo %}Mi perfil{% endblock %}
+
+{% block estilos_extra %}
+<link rel="stylesheet" href="{% static 'css/danzarines/perfil.css' %}">
+{% endblock %}
+
+{% block contenido %}
+<header class="perfil-header">
+    <div>
+        <span class="perfil-kicker"><i class="fas fa-user-circle"></i> Cuenta de danzarín</span>
+        <h1 class="page-title">Mi perfil</h1>
+        <p class="page-subtitle">Revisa y actualiza tus datos personales y de acceso.</p>
+    </div>
+    <a class="btn btn-outline-primary" href="{% url 'cambiar_credenciales_danzarin' %}">
+        <i class="fas fa-key"></i> Cambiar credenciales
+    </a>
+</header>
+
+<form class="perfil-layout" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <section class="perfil-card">
+        <div class="perfil-card-header">
+            <h2>Datos personales</h2>
+            <p>Tu código y bloque son administrados por el directorio.</p>
+        </div>
+        <div class="perfil-card-body">
+            <div class="perfil-identidad">
+                {% if danzarin.foto_perfil %}
+                    <img class="perfil-avatar" id="vistaFotoPerfil" src="{{ danzarin.foto_perfil.url }}" alt="Foto de perfil">
+                {% else %}
+                    <span class="perfil-avatar perfil-avatar-inicial" id="avatarIniciales">{{ danzarin.primer_nombre|slice:":1" }}{{ danzarin.apellido_paterno|slice:":1" }}</span>
+                    <img class="perfil-avatar" id="vistaFotoPerfil" alt="Vista previa de foto" hidden>
+                {% endif %}
+                <div>
+                    <strong>{{ danzarin.nombre_completo }}</strong>
+                    <span>Código {{ danzarin.codigo }}{% if danzarin.bloque %} · {{ danzarin.bloque.nombre }}{% endif %}</span>
+                    <label class="btn btn-sm btn-outline-primary mt-2" for="id_foto_perfil">
+                        <i class="fas fa-camera"></i> Cambiar foto
+                    </label>
+                    <div class="foto-input">
+                        <input type="file" id="id_foto_perfil" name="foto_perfil" accept="image/jpeg,image/png,image/webp">
+                    </div>
+                    {% if errores.foto_perfil %}<div class="campo-error">{{ errores.foto_perfil }}</div>{% endif %}
+                    <small class="text-muted">JPG, PNG o WEBP · máximo 5 MB</small>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="id_username">Usuario</label>
+                    <input class="form-control" type="text" id="id_username" name="username" maxlength="150" value="{{ valores.username }}" required autocomplete="username">
+                    {% if errores.username %}<div class="campo-error">{{ errores.username }}</div>{% endif %}
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="id_ci">CI *</label>
+                    <input class="form-control" type="text" id="id_ci" value="{{ danzarin.ci }}" disabled>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="id_complemento_ci">Complemento</label>
+                    <input class="form-control" type="text" id="id_complemento_ci" value="{{ danzarin.complemento_ci }}" disabled>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="id_apellido_paterno">Apellido paterno</label>
+                    <input class="form-control" type="text" id="id_apellido_paterno" value="{{ danzarin.apellido_paterno }}" disabled>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="id_apellido_materno">Apellido materno</label>
+                    <input class="form-control" type="text" id="id_apellido_materno" value="{{ danzarin.apellido_materno }}" disabled>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="id_primer_nombre">Primer nombre</label>
+                    <input class="form-control" type="text" id="id_primer_nombre" value="{{ danzarin.primer_nombre }}" disabled>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="id_segundo_nombre">Segundo nombre</label>
+                    <input class="form-control" type="text" id="id_segundo_nombre" value="{{ danzarin.segundo_nombre }}" disabled>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="id_genero">Género</label>
+                    <input class="form-control" type="text" id="id_genero" value="{{ danzarin.get_genero_display|default:'—' }}" disabled>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="id_fecha_nacimiento">Fecha de nacimiento</label>
+                    <input class="form-control" type="date" id="id_fecha_nacimiento" value="{{ danzarin.fecha_nacimiento|date:'Y-m-d' }}" disabled>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="id_correo">Correo electrónico</label>
+                    <input class="form-control" type="email" id="id_correo" value="{{ danzarin.correo }}" disabled>
+                </div>
+            </div>
+        </div>
+        <footer class="perfil-card-footer">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Guardar perfil</button>
+        </footer>
+    </section>
+</form>
+{% endblock %}
+
+{% block scripts_extra %}
+<script src="{% static 'js/danzarines/perfil.js' %}"></script>
+{% endblock %}

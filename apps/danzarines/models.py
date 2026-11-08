@@ -1,10 +1,44 @@
+from django.conf import settings
+from django.core.validators import FileExtensionValidator
 from django.contrib.auth.models import User
 from django.db import models
+from django.core.exceptions import ValidationError
+
+
+MAX_FOTO_PERFIL_BYTES = 5 * 1024 * 1024
+
+
+def validar_tamano_foto_perfil(archivo):
+    if archivo.size > MAX_FOTO_PERFIL_BYTES:
+        raise ValidationError("La foto de perfil no debe superar los 5 MB.")
+
+
+class Genero(models.TextChoices):
+    FEMENINO = "F", "Femenino"
+    MASCULINO = "M", "Masculino"
+    OTRO = "O", "Otro"
 
 
 class Danzarin(models.Model):
     codigo = models.CharField(max_length=20, unique=True)
     ci = models.CharField(max_length=20, blank=True, default="", db_index=True)
+    complemento_ci = models.CharField(max_length=5, blank=True, default="")
+    genero = models.CharField(max_length=1, choices=Genero.choices, blank=True, default="")
+    fecha_nacimiento = models.DateField(null=True, blank=True)
+    correo = models.EmailField(blank=True, default="")
+    foto_perfil = models.ImageField(
+        upload_to="danzarines/perfiles/",
+        blank=True,
+        null=True,
+        validators=[FileExtensionValidator(["jpg", "jpeg", "png", "webp"]), validar_tamano_foto_perfil],
+    )
+    usuario = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="danzarin",
+        null=True,
+        blank=True,
+    )
     bloque = models.ForeignKey(
         "bloques.Bloque",
         on_delete=models.PROTECT,
@@ -17,7 +51,13 @@ class Danzarin(models.Model):
     primer_nombre = models.CharField(max_length=100)
     segundo_nombre = models.CharField(max_length=100, blank=True, default="")
     habilitado = models.BooleanField(default=True)
-    creado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    creado_por = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="danzarines_creados",
+    )
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
 

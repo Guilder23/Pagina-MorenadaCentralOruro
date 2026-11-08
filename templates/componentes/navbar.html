@@ -4,7 +4,7 @@
         <button type="button" class="navbar-toggle" id="btnToggleSidebar" aria-label="Alternar menú lateral" aria-expanded="true" title="Colapsar menú lateral">
             <i class="fas fa-bars"></i>
         </button>
-        <a class="navbar-brand-mc" href="{% url 'listar_danzarines' %}" aria-label="Morenada Central" title="Morenada Central">
+        <a class="navbar-brand-mc" href="{% if user.perfil.rol == 'danzarin' %}{% url 'perfil_danzarin' %}{% else %}{% url 'listar_danzarines' %}{% endif %}" aria-label="Morenada Central" title="Morenada Central">
             <img class="navbar-logo" src="{% static 'media/logo.png' %}" alt="Logo Morenada Central">
         </a>
     </div>

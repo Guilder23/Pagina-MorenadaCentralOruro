@@ -102,6 +102,7 @@
                 <tr>
                     <th class="text-center">Código</th>
                     <th>CI</th>
+                    {% if user.is_superuser or user.perfil.rol == 'administrador' %}<th>Usuario</th>{% endif %}
                     <th>Bloque</th>
                     <th>Apellido paterno</th>
                     <th>Apellido materno</th>
@@ -115,7 +116,10 @@
                 {% for c in danzarines %}
                 <tr>
                     <td class="text-center"><span class="codigo-chip">{{ c.codigo }}</span></td>
-                    <td>{{ c.ci|default:"—" }}</td>
+                    <td>{{ c.ci|default:"—" }}{% if c.complemento_ci %}-{{ c.complemento_ci }}{% endif %}</td>
+                    {% if user.is_superuser or user.perfil.rol == 'administrador' %}
+                    <td>{{ c.usuario.username|default:"Sin cuenta" }}</td>
+                    {% endif %}
                     <td>{% if c.bloque %}<span class="bloque-chip">{{ c.bloque.nombre }}</span>{% else %}—{% endif %}</td>
                     <td class="fw-600">{{ c.apellido_paterno }}</td>
                     <td>{{ c.apellido_materno|default:"—" }}</td>
@@ -135,7 +139,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="9">
+                    <td colspan="{% if user.is_superuser or user.perfil.rol == 'administrador' %}10{% else %}9{% endif %}">
                         <div class="empty-state">
                             <i class="fas fa-user-friends"></i>
                             <p>No se encontraron danzarines.</p>

@@ -1,5 +1,12 @@
 <aside class="componente-sidebar" id="sidebar">
     <div class="sidebar-section">Menú</div>
+    {% if user.perfil.rol == 'danzarin' %}
+    <nav class="sidebar-nav">
+        <a class="sidebar-link {% if request.resolver_match.url_name in 'perfil_danzarin cambiar_credenciales_danzarin' %}active{% endif %}" href="{% url 'perfil_danzarin' %}" title="Mi perfil">
+            <i class="fas fa-user-circle"></i><span>Mi perfil</span>
+        </a>
+    </nav>
+    {% else %}
     <nav class="sidebar-nav">
         <a class="sidebar-link {% if request.resolver_match.url_name in 'listar_presentaciones crear_presentacion detalle_presentacion editar_presentacion eliminar_presentacion subir_imagen_presentacion' %}active{% endif %}" href="{% url 'listar_presentaciones' %}" title="Inicio">
             <i class="fas fa-home"></i><span>Inicio</span>
@@ -44,6 +51,7 @@
         </a>
         {% endif %} {% endcomment %}
     </nav>
+    {% endif %}
     <div class="sidebar-footer">
         <i class="fas fa-shield-alt"></i> Sistema de gestión
     </div>

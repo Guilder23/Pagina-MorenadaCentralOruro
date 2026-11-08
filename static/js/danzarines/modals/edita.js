@@ -14,12 +14,18 @@
                     $('#editDanzarinId').val(data.id);
                     $('#editCodigo').val(data.codigo);
                     $('#editCi').val(data.ci);
+                    $('#editComplementoCi').val(data.complemento_ci);
+                    $('#editGenero').val(data.genero);
+                    $('#editFechaNacimiento').val(data.fecha_nacimiento);
+                    $('#editCorreo').val(data.correo);
                     $('#editBloque').val(data.bloque_id ? String(data.bloque_id) : '');
                     $('#editApellidoPaterno').val(data.apellido_paterno);
                     $('#editApellidoMaterno').val(data.apellido_materno);
                     $('#editPrimerNombre').val(data.primer_nombre);
                     $('#editSegundoNombre').val(data.segundo_nombre);
                     $('#editHabilitado').prop('checked', !!data.habilitado);
+                    $('#editUsuario').val(data.usuario || '');
+                    $('#editNuevaContrasena').val('');
                     form.setAttribute('action', '/danzarines/' + data.id + '/editar/');
                     $('#modalEditarDanzarin').modal('show');
                 })

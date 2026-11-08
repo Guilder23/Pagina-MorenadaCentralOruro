@@ -1,0 +1,33 @@
+.credenciales-wrap {
+    display: grid;
+    min-height: 65vh;
+    place-items: center;
+    padding: 24px 12px;
+}
+
+.credenciales-card {
+    width: 100%;
+    max-width: 480px;
+    padding: 28px;
+    border: 1px solid var(--mc-border);
+    border-radius: 16px;
+    background: var(--mc-surface);
+    box-shadow: var(--mc-shadow);
+}
+
+.credenciales-icon {
+    display: grid;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    place-items: center;
+    border-radius: 14px;
+    background: #eaf2fb;
+    color: var(--mc-primary);
+    font-size: 1.2rem;
+}
+
+.credenciales-card h1 { color: var(--mc-primary); font-size: 1.35rem; }
+.credenciales-card > p { margin-bottom: 20px; color: var(--mc-muted); font-size: .9rem; }
+.credenciales-card .form-control { min-height: 42px; }
+.campo-error { margin-top: 4px; color: #b4232f; font-size: .78rem; }

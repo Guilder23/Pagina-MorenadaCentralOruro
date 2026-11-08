@@ -1,0 +1,49 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block titulo %}Actualizar credenciales{% endblock %}
+
+{% block estilos_extra %}
+<link rel="stylesheet" href="{% static 'css/danzarines/credenciales.css' %}">
+{% endblock %}
+
+{% block contenido %}
+<section class="credenciales-wrap">
+    <form class="credenciales-card" method="post">
+        {% csrf_token %}
+        <span class="credenciales-icon"><i class="fas fa-shield-alt"></i></span>
+        <h1>{% if request.user.perfil.requiere_cambio_password %}Protege tu cuenta{% else %}Cambiar credenciales{% endif %}</h1>
+        {% if request.user.perfil.requiere_cambio_password %}
+            <p>Por seguridad, actualiza el usuario o la contraseña inicial antes de continuar.</p>
+        {% else %}
+            <p>Usa una contraseña nueva que no compartas con otras personas.</p>
+        {% endif %}
+        <div class="form-group">
+            <label for="id_username">Usuario</label>
+            <input class="form-control" type="text" id="id_username" name="username" maxlength="150" value="{{ valores.username }}" required autocomplete="username">
+            {% if errores.username %}<div class="campo-error">{{ errores.username }}</div>{% endif %}
+        </div>
+        <div class="form-group">
+            <label for="id_old_password">Contraseña actual</label>
+            <input class="form-control" type="password" id="id_old_password" name="old_password" required autocomplete="current-password">
+            {% if errores.old_password %}<div class="campo-error">{{ errores.old_password }}</div>{% endif %}
+        </div>
+        <div class="form-group">
+            <label for="id_new_password1">Nueva contraseña</label>
+            <input class="form-control" type="password" id="id_new_password1" name="new_password1" required autocomplete="new-password">
+            <small class="form-text text-muted">La contraseña se validará por seguridad antes de guardarse.</small>
+            {% if errores.new_password1 %}<div class="campo-error">{{ errores.new_password1 }}</div>{% endif %}
+        </div>
+        <div class="form-group">
+            <label for="id_new_password2">Confirmar nueva contraseña</label>
+            <input class="form-control" type="password" id="id_new_password2" name="new_password2" required autocomplete="new-password">
+            {% if errores.new_password2 %}<div class="campo-error">{{ errores.new_password2 }}</div>{% endif %}
+        </div>
+        <button class="btn btn-primary btn-block" type="submit"><i class="fas fa-save"></i> Guardar credenciales</button>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts_extra %}
+<script src="{% static 'js/danzarines/credenciales.js' %}"></script>
+{% endblock %}

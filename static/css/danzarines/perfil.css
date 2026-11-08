@@ -1,0 +1,86 @@
+.perfil-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.perfil-kicker {
+    color: var(--mc-primary);
+    font-size: .75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.perfil-kicker i { margin-right: 5px; }
+
+.perfil-layout { max-width: 1000px; }
+
+.perfil-card {
+    overflow: hidden;
+    border: 1px solid var(--mc-border);
+    border-radius: 14px;
+    background: var(--mc-surface);
+    box-shadow: var(--mc-shadow);
+}
+
+.perfil-card-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--mc-border);
+}
+
+.perfil-card-header h2 { margin: 0 0 4px; color: var(--mc-primary); font-size: 1rem; }
+.perfil-card-header p { margin: 0; color: var(--mc-muted); font-size: .8rem; }
+.perfil-card-body { padding: 22px; }
+
+.perfil-identidad {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 14px;
+    border: 1px solid var(--mc-border);
+    border-radius: 12px;
+    background: #f8fbff;
+}
+
+.perfil-avatar {
+    width: 84px;
+    height: 84px;
+    flex: 0 0 84px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #e8f0f8;
+}
+
+.perfil-avatar-inicial {
+    display: grid;
+    place-items: center;
+    color: var(--mc-primary);
+    font-size: 1.4rem;
+    font-weight: 800;
+}
+
+.perfil-identidad strong,
+.perfil-identidad span { display: block; }
+.perfil-identidad strong { color: var(--mc-text); }
+.perfil-identidad div > span { color: var(--mc-muted); font-size: .8rem; }
+.foto-input { display: none; }
+.perfil-card .form-control { min-height: 42px; }
+
+.perfil-card-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 14px 22px;
+    border-top: 1px solid var(--mc-border);
+    background: #fafcfe;
+}
+
+.campo-error { margin-top: 4px; color: #b4232f; font-size: .78rem; }
+
+@media (max-width: 600px) {
+    .perfil-header { align-items: flex-start; flex-direction: column; }
+    .perfil-card-body { padding: 16px; }
+    .perfil-identidad { align-items: flex-start; }
+}
